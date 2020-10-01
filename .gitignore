@@ -5,6 +5,8 @@
 *-checkpoint.ipynb
 *.ipynb_checkpoints
 exploratory_analysis.ipynb
+__pycache__
 
 # Dataset
 *.csv
+*.zip
