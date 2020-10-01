@@ -3,6 +3,7 @@
 
 # Jupyter Notebook
 *-checkpoint.ipynb
+*.ipynb_checkpoints
 exploratory_analysis.ipynb
 
 # Dataset
