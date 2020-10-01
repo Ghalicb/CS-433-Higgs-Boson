@@ -23,11 +23,11 @@ def least_squares_SGD(y, tx, initial_w, max_iters, gamma):
     
   for n_iter in range(max_iters):
     if n_iter%N==0:
-      indexes = np.random.shuffle(indexes)
+      indexes = np.random.shuffle(indexes) #shuffle data before new pass on data
+      
     n = indexes[n_iter%N]
     x_n = tx[n].reshape((1,D))
-    y_n = y[n]
-    e_n = y_n - x_n @ w
+    e_n = y[n] - x_n @ w
     sg = -e_n*x_n.T
     
     w=w-gamma*sg
@@ -56,4 +56,3 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
 def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
   """Regularized logistic regression using gradient descent or SGD"""
   return (w, loss)
-
