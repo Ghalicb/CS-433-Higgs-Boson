@@ -3,7 +3,7 @@
 import csv
 import numpy as np
 
-def compute_mse_loss(y, tx, w)
+def compute_mse_loss(y, tx, w):
   e = y - tx.T @ w
   return -1/(2*len(y)) * e.T @ e
 
