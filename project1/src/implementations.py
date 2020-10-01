@@ -1,6 +1,8 @@
 import numpy as np
 from proj1_helpers import *
 
+#TODO decide what format are the y and initial_w we receive, default is just a 1-D array -> PROBLEM we can't transpose it to a vertical vector
+
 def least_squares_GD(y, tx, initial_w, max_iters, gamma):
   """Linear regression using gradient descent"""
   N = len(y)
