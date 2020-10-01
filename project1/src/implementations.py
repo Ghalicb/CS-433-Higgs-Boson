@@ -1,5 +1,5 @@
 import numpy as np
-from helpers import *
+from proj1_helpers import *
 
 def least_squares_GD(y, tx, initial_w, max_iters, gamma):
   """Linear regression using gradient descent"""
@@ -19,11 +19,11 @@ def least_squares_SGD(y, tx, initial_w, max_iters, gamma):
   N=len(y)
   D=tx.shape[1]  
   w=initial_w
-  indexes = range(N)
+  indexes = np.arange(N)
     
   for n_iter in range(max_iters):
     if n_iter%N==0:
-      indexes = np.random.shuffle(indexes) #shuffle data before new pass on data
+      np.random.shuffle(indexes) #shuffle data before new pass on data, inplace
       
     n = indexes[n_iter%N]
     x_n = tx[n].reshape((1,D))
