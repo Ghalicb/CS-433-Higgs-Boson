@@ -16,7 +16,25 @@ def least_squares_GD(y, tx, initial_w, max_iters, gamma):
 
 def least_squares_SGD(y, tx, initial_w, max_iters, gamma):
   """Linear regression using stochastic gradient descent"""
+  N=len(y)
+  D=tx.shape[1]  
+  w=initial_w
+  indexes = range(N)
+    
+  for n_iter in range(max_iters):
+    if n_iter%N==0:
+      indexes = np.random.shuffle(indexes)
+    n = indexes[n_iter%N]
+    x_n = tx[n].reshape((1,D))
+    y_n = y[n]
+    e_n = y_n - x_n @ w
+    sg = -e_n*x_n.T
+    
+    w=w-gamma*sg
+    
+  loss = compute_mse_loss(y, tx, w)
   return (w, loss)
+    
 
 def least_squares(y, tx):
   """Least squares regression using normal equations"""
