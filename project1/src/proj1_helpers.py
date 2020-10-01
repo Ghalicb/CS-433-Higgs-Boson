@@ -3,6 +3,9 @@
 import csv
 import numpy as np
 
+def compute_mse_loss(y, tx, w)
+  e = y - tx.T @ w
+  return -1/(2*len(y)) * e.T @ e
 
 def load_csv_data(data_path, sub_sample=False):
     """Loads data and returns y (class labels), tX (features) and ids (event ids)"""
