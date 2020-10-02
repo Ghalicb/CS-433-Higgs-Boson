@@ -40,9 +40,7 @@ def least_squares_SGD(y, tx, initial_w, max_iters, gamma):
 
 def least_squares(y, tx):
   """Least squares regression using normal equations"""
-  w = np.linalg.lstsq(tx.T @ tx, tx.T @ y)
-  loss = compute_mse_loss(y, tx, w)
-  return (w, loss)
+  return ridge_regression(y, tx, 0)
 
 def ridge_regression(y, tx, lambda_):
   """Ridge regression using normal equations"""
