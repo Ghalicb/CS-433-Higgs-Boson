@@ -1,5 +1,7 @@
 import numpy as np
-from helpers import *
+from proj1_helpers import *
+
+#TODO decide what format are the y and initial_w we receive, default is just a 1-D array -> PROBLEM we can't transpose it to a vertical vector
 
 def least_squares_GD(y, tx, initial_w, max_iters, gamma):
   """Linear regression using gradient descent"""
@@ -16,7 +18,25 @@ def least_squares_GD(y, tx, initial_w, max_iters, gamma):
 
 def least_squares_SGD(y, tx, initial_w, max_iters, gamma):
   """Linear regression using stochastic gradient descent"""
+  N=len(y)
+  D=tx.shape[1]  
+  w=initial_w
+  indexes = np.arange(N)
+    
+  for n_iter in range(max_iters):
+    if n_iter%N==0:
+      np.random.shuffle(indexes) #shuffle data before new pass on data, inplace
+      
+    n = indexes[n_iter%N]
+    x_n = tx[n].reshape((1,D))
+    e_n = y[n] - x_n @ w
+    sg = -e_n*x_n.T
+    
+    w=w-gamma*sg
+    
+  loss = compute_mse_loss(y, tx, w)
   return (w, loss)
+    
 
 def least_squares(y, tx):
   """Least squares regression using normal equations"""
@@ -38,4 +58,3 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
 def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
   """Regularized logistic regression using gradient descent or SGD"""
   return (w, loss)
-
