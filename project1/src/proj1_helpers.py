@@ -41,6 +41,73 @@ def compute_mse_loss(y, tx, w):
   e = y - tx @ w
   return (1/(2*len(y)) * e.T @ e).item()
 
+def compute_mse_gradient(y, x, w):
+  """Mean Square Error gradient for a mini-batch of B points
+
+  Parameters
+  ----------
+  y : numpy array
+    Targets vector (B,1)
+  x : numpy array
+    Feature matrix (B,D)
+  w : numpy array
+    weights vector (D,1)
+  
+  Returns
+  -------
+  sg : numpy array 
+    gradient of mse loss (D,1)
+    
+  """  
+  e = y - x @ w
+  sg = -e*x.T
+  return sg
+
+def sigmoid(x):
+  """
+
+
+  """
+  return None 
+
+def compute_logistic_loss():
+  """Logistic loss 
+
+  Parameters
+  ----------
+  y : numpy array
+    Targets vector (N,1)
+  tx : numpy array
+    Feature matrix (N,D)
+  w : numpy array
+    weights vector (D,1)
+  
+  Returns
+  -------
+  loss : float
+  """  
+
+  return None 
+
+def compute_logistic_gradient(y, tx, w):
+  """Logistic gradient for a mini-batch of B points
+
+  Parameters
+  ----------
+  y : numpy array
+      Targets vector (B,1)
+  tx : numpy array
+      Feature matrix (B,D)
+  w : numpy array
+      weights vector (D,1)
+
+  Returns
+  -------
+  sg : numpy array 
+      gradient of logistic loss (D,1)
+  """  
+  return None
+
 def load_csv_data(data_path, sub_sample=False):
     """Loads data and returns y (class labels), tX (features) and ids (event ids)"""
     y = np.genfromtxt(data_path, delimiter=",", skip_header=1, dtype=str, usecols=1)

@@ -1,10 +1,60 @@
 import numpy as np
 from proj1_helpers import *
 
-#TODO decide what format are the y and initial_w we receive, default is just a 1-D array -> PROBLEM we can't transpose it to a vertical vector
+loss_kinds = { 
+  "LEAST_SQUARE" : (compute_mse_loss, compute_mse_gradient),
+  "LOGISTIC_REGRESSION" : (compute_logistic_loss, compute_logistic_gradient)
+}
+
+#TODO Implement minibatch
+
+def SGD(y, tx, initial_w, max_iters, gamma, loss_kind, mini_batch):
+  """Linear regression using Stochastic Gradient Descent
+
+  Parameters
+  ----------
+  y : numpy array
+    Targets vector (N,) or (N,1)
+  tx : numpy array
+    Feature matrix (N,D)
+  initial_w : numpy array
+    weights vector (D,) or (D,1)
+  max_iters : int
+    number of iteration to run SGD
+  gamma : float
+    learning rate
+  loss_kind : string
+    can take value in { "LEAST_SQUARE" , "LOGISTIC_REGRESSION" }
+  
+  Returns
+  -------
+  (w, loss) : (numpy array (D,1), float)
+      weights and loss after max_iters iterations of SGD
+  """
+  y, tx = prepare_dimensions(y, tx)
+  N = len(y)
+  w = initial_w.reshape(-1,1)
+  loss_function, gradient_function = loss_kinds[loss_kind]
+    
+  indexes = np.arange(N)
+
+  for n_iter in range(max_iters):
+    if mini_batch != N and n_iter%N==0:
+      #shuffle data before new pass on data, inplace
+      np.random.shuffle(indexes) 
+      
+    n = indexes[n_iter%N]
+    x_n = tx[n].reshape(1,-1)
+    sg = gradient_function(y, x_n, w)
+    
+    w = w - gamma * sg
+    
+  loss = loss_function(y, tx, w)
+  return (w, loss)
 
 def least_squares_GD(y, tx, initial_w, max_iters, gamma):
-  """Linear regression using gradient descent
+  """Linear regression using gradient descent.
+  A special case of SGD with a MSE loss and a mini-batch size of N
 
   Parameters
   ----------
@@ -24,21 +74,11 @@ def least_squares_GD(y, tx, initial_w, max_iters, gamma):
   (w, loss) : (numpy array (D,1), float)
       weights and loss after max_iters iterations of GD
   """
-  y, tx = prepare_dimensions(y, tx)
-  N = len(y)
-  w = initial_w.reshape(-1,1)
-
-  for n_iter in range(max_iters):
-    gradient = -1/N * tx.T @ (y - tx @ w)
-    w = w - gamma * gradient
-    # print("Gradient Descent({bi}/{ti}): loss={l}".format( bi=n_iter, ti=max_iters - 1, l=(1/(2*N) * (y - tx.T @ w).T @ (y - tx.T @ w))))
-
-  loss = compute_mse_loss(y, tx, w)
-  return (w, loss)
-
+  return SGD(y, tx, initial_w, max_iters, gamma, "LEAST_SQUARE", len(y))
 
 def least_squares_SGD(y, tx, initial_w, max_iters, gamma):
-  """Linear regression using stochastic gradient descent
+  """Linear regression using Stochastic Gradient Descent.
+  A special case of SGD with a MSE loss and a mini-batch size of 1
 
   Parameters
   ----------
@@ -52,32 +92,15 @@ def least_squares_SGD(y, tx, initial_w, max_iters, gamma):
     number of iteration to run SGD
   gamma : float
     learning rate
+  loss_kind : string
+    can take value in { "LEAST_SQUARE" , "LOGISTIC_REGRESSION" }
   
   Returns
   -------
   (w, loss) : (numpy array (D,1), float)
       weights and loss after max_iters iterations of SGD
   """
-  y, tx = prepare_dimensions(y, tx)
-  N = len(y)
-  w = initial_w.reshape(-1,1)
-    
-  indexes = np.arange(N)
-
-  for n_iter in range(max_iters):
-    if n_iter%N==0:
-      #shuffle data before new pass on data, inplace
-      np.random.shuffle(indexes) 
-      
-    n = indexes[n_iter%N]
-    x_n = tx[n].reshape(1,-1)
-    e_n = y[n] - x_n @ w
-    sg = -e_n*x_n.T
-    
-    w=w-gamma*sg
-    
-  loss = compute_mse_loss(y, tx, w)
-  return (w, loss)
+  return SGD(y, tx, initial_w, max_iters, gamma, "LEAST_SQUARE", 1)
     
 
 def least_squares(y, tx):
@@ -96,9 +119,9 @@ def ridge_regression(y, tx, lambda_):
 
 def logistic_regression(y, tx, initial_w, max_iters, gamma):
   """Logistic regression using gradient descent or SGD"""
-  return reg_logistic_regression(y, tx, 0, initial_w, max_iters, gamma)
+  return SGD(y, tx, 0, initial_w, max_iters, gamma, "LOGISTIC_REGRESSION", 1)
 
 
 def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
   """Regularized logistic regression using gradient descent or SGD"""
-  return (w, loss)
+  return None
