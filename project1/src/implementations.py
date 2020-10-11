@@ -8,7 +8,7 @@ def least_squares_GD(y, tx, initial_w, max_iters, gamma):
 
   Parameters
   ----------
-  y : numy array
+  y : numpy array
     Targets vector (N,) or (N,1)
   tx : numpy array
     Feature matrix (N,D)
@@ -41,7 +41,7 @@ def least_squares_SGD(y, tx, initial_w, max_iters, gamma):
 
   Parameters
   ----------
-  y : numy array
+  y : numpy array
     Targets vector (N,) or (N,1)
   tx : numpy array
     Feature matrix (N,D)
