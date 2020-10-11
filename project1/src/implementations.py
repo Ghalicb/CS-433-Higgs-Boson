@@ -6,8 +6,6 @@ loss_kinds = {
   "LOGISTIC_REGRESSION" : (compute_logistic_loss, compute_logistic_gradient)
 }
 
-#TODO Implement minibatch
-
 def SGD(y, tx, initial_w, max_iters, gamma, loss_kind, batch_size):
   """Linear regression using Stochastic Gradient Descent
 
