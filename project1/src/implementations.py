@@ -4,9 +4,29 @@ from proj1_helpers import *
 #TODO decide what format are the y and initial_w we receive, default is just a 1-D array -> PROBLEM we can't transpose it to a vertical vector
 
 def least_squares_GD(y, tx, initial_w, max_iters, gamma):
-  """Linear regression using gradient descent"""
+  """Linear regression using gradient descent
+
+  Parameters
+  ----------
+  y : numy array
+    Targets vector (N,) or (N,1)
+  tx : numpy array
+    Feature matrix (N,D)
+  initial_w : numpy array
+    weights vector (D,) or (D,1)
+  max_iters : int
+    number of iteration to run SGD
+  gamma : float
+    learning rate
+  
+  Returns
+  -------
+  (w, loss) : (numpy array (D,1), float)
+      weights and loss after max_iters iterations of GD
+  """
+  y, tx = prepare_dimensions(y, tx)
   N = len(y)
-  w = initial_w
+  w = initial_w.reshape(-1,1)
 
   for n_iter in range(max_iters):
     gradient = -1/N * tx.T @ (y - tx @ w)
@@ -17,18 +37,39 @@ def least_squares_GD(y, tx, initial_w, max_iters, gamma):
   return (w, loss)
 
 def least_squares_SGD(y, tx, initial_w, max_iters, gamma):
-  """Linear regression using stochastic gradient descent"""
-  N=len(y)
-  D=tx.shape[1]  
-  w=initial_w
-  indexes = np.arange(N)
+  """Linear regression using stochastic gradient descent
+
+  Parameters
+  ----------
+  y : numy array
+    Targets vector (N,) or (N,1)
+  tx : numpy array
+    Feature matrix (N,D)
+  initial_w : numpy array
+    weights vector (D,) or (D,1)
+  max_iters : int
+    number of iteration to run SGD
+  gamma : float
+    learning rate
+  
+  Returns
+  -------
+  (w, loss) : (numpy array (D,1), float)
+      weights and loss after max_iters iterations of SGD
+  """
+  y, tx = prepare_dimensions(y, tx)
+  N = len(y)
+  w = initial_w.reshape(-1,1)
     
+  indexes = np.arange(N)
+
   for n_iter in range(max_iters):
     if n_iter%N==0:
-      np.random.shuffle(indexes) #shuffle data before new pass on data, inplace
+      #shuffle data before new pass on data, inplace
+      np.random.shuffle(indexes) 
       
     n = indexes[n_iter%N]
-    x_n = tx[n].reshape((1,D))
+    x_n = tx[n].reshape(1,-1)
     e_n = y[n] - x_n @ w
     sg = -e_n*x_n.T
     
