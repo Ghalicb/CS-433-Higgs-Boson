@@ -3,6 +3,10 @@
 import csv
 import numpy as np
 
+def prepare_dimensions(y, tx):
+  """Reshape input data to two dimensions"""
+  return y.reshape(-1, 1), tx.reshape(len(y), -1)
+
 def compute_mse_loss(y, tx, w):
   e = y - tx @ w
   return -1/(2*len(y)) * e.T @ e
