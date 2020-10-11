@@ -41,14 +41,14 @@ def compute_mse_loss(y, tx, w):
   e = y - tx @ w
   return (1/(2*len(y)) * e.T @ e).item()
 
-def compute_mse_gradient(y, x, w):
+def compute_mse_gradient(y, tx, w):
   """Mean Square Error gradient for a mini-batch of B points
 
   Parameters
   ----------
   y : numpy array
     Targets vector (B,1)
-  x : numpy array
+  tx : numpy array
     Feature matrix (B,D)
   w : numpy array
     weights vector (D,1)
@@ -58,9 +58,10 @@ def compute_mse_gradient(y, x, w):
   sg : numpy array 
     gradient of mse loss (D,1)
     
-  """  
-  e = y - x @ w
-  sg = -e*x.T
+  """ 
+  B = len(y)
+  e = y - tx @ w
+  sg = -1/B * tx.T @ (y - tx @ w)
   return sg
 
 def sigmoid(x):

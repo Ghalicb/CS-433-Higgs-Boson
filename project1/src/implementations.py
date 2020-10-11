@@ -8,7 +8,7 @@ loss_kinds = {
 
 #TODO Implement minibatch
 
-def SGD(y, tx, initial_w, max_iters, gamma, loss_kind, mini_batch):
+def SGD(y, tx, initial_w, max_iters, gamma, loss_kind, batch_size):
   """Linear regression using Stochastic Gradient Descent
 
   Parameters
@@ -25,6 +25,8 @@ def SGD(y, tx, initial_w, max_iters, gamma, loss_kind, mini_batch):
     learning rate
   loss_kind : string
     can take value in { "LEAST_SQUARE" , "LOGISTIC_REGRESSION" }
+  batch_size : int 
+    size of a minibatch
   
   Returns
   -------
@@ -37,17 +39,30 @@ def SGD(y, tx, initial_w, max_iters, gamma, loss_kind, mini_batch):
   loss_function, gradient_function = loss_kinds[loss_kind]
     
   indexes = np.arange(N)
-
-  for n_iter in range(max_iters):
-    if mini_batch != N and n_iter%N==0:
-      #shuffle data before new pass on data, inplace
+  n_iter = 0
+  start_id = 0
+  end_id = batch_size
+  
+  while n_iter < max_iters:
+    #reshuffle indexes at the beginning of epoch if minibatches are used
+    if start_id == 0 and batch_size != N:
       np.random.shuffle(indexes) 
       
-    n = indexes[n_iter%N]
-    x_n = tx[n].reshape(1,-1)
-    sg = gradient_function(y, x_n, w)
+    x_n = tx[indexes[start_id:end_id]].reshape(batch_size,-1)
+    y_n = y[indexes[start_id:end_id]]
+    sg = gradient_function(y_n, x_n, w)
     
     w = w - gamma * sg
+    
+    n_iter += 1
+    start_id = start_id + batch_size
+    if start_id >= N:
+      start_id = 0
+    
+    end_id = start_id + batch_size
+    #taking care of potentially smaller last minibatch
+    if end_id > N:
+      end_id = N
     
   loss = loss_function(y, tx, w)
   return (w, loss)
