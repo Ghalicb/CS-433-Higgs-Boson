@@ -39,6 +39,7 @@ def compute_mse_loss(y, tx, w):
   loss : float
   """  
   e = y - tx @ w
+  print((e.T @ e).shape)
   return (-1/(2*len(y)) * e.T @ e).item()
 
 def load_csv_data(data_path, sub_sample=False):
