@@ -4,12 +4,42 @@ import csv
 import numpy as np
 
 def prepare_dimensions(y, tx):
-  """Reshape data to two-dimensional arrays"""
-  return y.reshape(-1, 1), tx.reshape(len(y), -1)
+  """Reshape input data to two dimensions, if the dimensions are already correct, they stay the same
+
+  Parameters
+  ----------
+  y : numy array
+    Targets vector (N,) or (N,1)
+  tx : numpy array
+    Feature matrix (N,D)
+  
+  Returns
+  -------
+  y_reshaped, tx_reshaped : (numpy array (N,1), numpy array (N,D))
+      two dimensional numpy arrays with correct dimensions
+  """
+  y_reshaped = y.reshape(-1, 1)
+  tx_reshaped = tx.reshape(len(y_reshaped), -1)
+  return y_reshaped, tx_reshaped
 
 def compute_mse_loss(y, tx, w):
+  """Mean Square Error loss 
+
+  Parameters
+  ----------
+  y : numy array
+    Targets vector (N,1)
+  tx : numpy array
+    Feature matrix (N,D)
+  w : numpy array
+    weights vector (D,1)
+  
+  Returns
+  -------
+  loss : float
+  """  
   e = y - tx @ w
-  return -1./(2*len(y)) * e.T @ e
+  return (-1./(2*len(y)) * e.T @ e).item()
 
 def load_csv_data(data_path, sub_sample=False):
     """Loads data and returns y (class labels), tX (features) and ids (event ids)"""
