@@ -85,14 +85,15 @@ def least_squares(y, tx):
 
 def ridge_regression(y, tx, lambda_):
   """Ridge regression using normal equations"""
+  y, tx = prepare_dimensions(y, tx)
   N, D = np.shape(tx)
-  w = np.linalg.lstsq(tx.T @ tx + 2 * N * lambda_ * np.eye(D), tx.T @ y)
+  w, _, _, _ = np.linalg.lstsq(tx.T @ tx + 2 * N * lambda_ * np.eye(D), tx.T @ y)
   loss = compute_mse_loss(y, tx, w)
   return (w, loss)
 
 def logistic_regression(y, tx, initial_w, max_iters, gamma):
   """Logistic regression using gradient descent or SGD"""
-  return (w, loss)
+  return reg_logistic_regression(y, tx, 0, initial_w, max_iters, gamma)
 
 def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
   """Regularized logistic regression using gradient descent or SGD"""
