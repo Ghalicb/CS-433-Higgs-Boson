@@ -93,7 +93,7 @@ def ridge_regression(y, tx, lambda_):
 
 def logistic_regression(y, tx, initial_w, max_iters, gamma):
   """Logistic regression using gradient descent or SGD"""
-  return (w, loss)
+  return reg_logistic_regression(y, tx, 0, initial_w, max_iters, gamma)
 
 def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
   """Regularized logistic regression using gradient descent or SGD"""
