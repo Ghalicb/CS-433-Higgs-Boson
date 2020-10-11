@@ -44,8 +44,9 @@ def least_squares(y, tx):
 
 def ridge_regression(y, tx, lambda_):
   """Ridge regression using normal equations"""
+  y, tx = prepare_dimensions(y, tx)
   N, D = np.shape(tx)
-  w = np.linalg.lstsq(tx.T @ tx + 2 * N * lambda_ * np.eye(D), tx.T @ y)
+  w, _, _, _ = np.linalg.lstsq(tx.T @ tx + 2 * N * lambda_ * np.eye(D), tx.T @ y)
   loss = compute_mse_loss(y, tx, w)
   return (w, loss)
 
