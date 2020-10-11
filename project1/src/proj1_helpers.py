@@ -8,7 +8,7 @@ def prepare_dimensions(y, tx):
 
   Parameters
   ----------
-  y : numy array
+  y : numpy array
     Targets vector (N,) or (N,1)
   tx : numpy array
     Feature matrix (N,D)
@@ -27,7 +27,7 @@ def compute_mse_loss(y, tx, w):
 
   Parameters
   ----------
-  y : numy array
+  y : numpy array
     Targets vector (N,1)
   tx : numpy array
     Feature matrix (N,D)
