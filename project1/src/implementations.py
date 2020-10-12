@@ -56,7 +56,7 @@ def least_squares_SGD(y, tx, initial_w, max_iters, gamma):
   Returns
   -------
   (w, loss) : (numpy array (D,1), float)
-      weights and loss after max_iters iterations of SGD
+    weights and loss after max_iters iterations of SGD
   """
   y, tx = prepare_dimensions(y, tx)
   N = len(y)
@@ -65,16 +65,16 @@ def least_squares_SGD(y, tx, initial_w, max_iters, gamma):
   indexes = np.arange(N)
 
   for n_iter in range(max_iters):
-    if n_iter%N==0:
+    if n_iter % N == 0:
       #shuffle data before new pass on data, inplace
       np.random.shuffle(indexes) 
       
-    n = indexes[n_iter%N]
+    n = indexes[n_iter % N]
     x_n = tx[n].reshape(1,-1)
     e_n = y[n] - x_n @ w
-    sg = -e_n*x_n.T
+    sg = - e_n @ x_n.T
     
-    w=w-gamma*sg
+    w = w - gamma * sg
     
   loss = compute_mse_loss(y, tx, w)
   return (w, loss)
@@ -86,7 +86,22 @@ def least_squares(y, tx):
 
 
 def ridge_regression(y, tx, lambda_):
-  """Ridge regression using normal equations"""
+  """Ridge regression using normal equations
+
+  Parameters
+  ----------
+  y : numpy array
+    Targets vector (N,) or (N,1)
+  tx : numpy array
+    Feature matrix (N,D)
+  lambda_ : float
+    Regularisation parameter
+  
+  Returns
+  -------
+  (w, loss) : (numpy array (D,1), float)
+    weights and loss after ridge regression
+  """
   y, tx = prepare_dimensions(y, tx)
   N, D = np.shape(tx)
   w, _, _, _ = np.linalg.lstsq(tx.T @ tx + 2 * N * lambda_ * np.eye(D), tx.T @ y, rcond=None)
