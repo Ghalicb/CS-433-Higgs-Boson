@@ -38,28 +38,8 @@ def compute_mse_loss(y, tx, w):
   -------
   loss : float
   """  
-  return compute_ridge_loss(y, tx, w, 0)
-
-def compute_ridge_loss(y, tx, w, lambda_):
-  """Ridge regression loss
-
-  Parameters
-  ----------
-  y : numpy array
-    Targets vector (N,1)
-  tx : numpy array
-    Feature matrix (N,D)
-  w : numpy array
-    weights vector (D,1)
-  lambda_ : float
-    Ridge regression parameter
-
-  Returns
-  -------
-  loss : float
-  """  
   e = y - tx @ w
-  return (1./(2*len(y)) * e.T @ e + lambda_ * w.T @ w).item() 
+  return (1./(2*len(y)) * e.T @ e).item() 
 
 
 def build_k_indices(y, K, seed):

@@ -142,7 +142,7 @@ def ridge_regression(y, tx, lambda_):
   y, tx = prepare_dimensions(y, tx)
   N, D = np.shape(tx)
   w, _, _, _ = np.linalg.lstsq(tx.T @ tx + 2 * N * lambda_ * np.eye(D), tx.T @ y, rcond=None)
-  loss = compute_ridge_loss(y, tx, w, lambda_)
+  loss = compute_mse_loss(y, tx, w)
   return (w, loss)
 
 
