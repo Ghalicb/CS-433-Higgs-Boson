@@ -151,50 +151,61 @@ def compute_mse_gradient(y, tx, w):
   sg = -1/B * tx.T @ (y - tx @ w)
   return sg
 
-def sigmoid(x):
-  """
+def sigmoid(t):
+    """apply the sigmoid function on t.
+    
+    Parameters
+    ----------
+    t: numpy array (B,1)
+    
+    Returns
+    -------
+    sig(t): numpy array (B,1)
+    
+    """
+    return 1/(1+np.exp(-t))
 
-
-  """
-  return None 
-
-def compute_logistic_loss():
-  """Logistic loss 
-
-  Parameters
-  ----------
-  y : numpy array
-    Targets vector (N,1)
-  tx : numpy array
-    Feature matrix (N,D)
-  w : numpy array
-    weights vector (D,1)
-  
-  Returns
-  -------
-  loss : float
-  """  
-
-  return None 
+def compute_logistic_loss(y, tx, w):
+    """compute the negative log likelihood loss.
+    
+    Parameters
+    ----------
+    y: numpy array (B,1)
+        targets
+    tx: numpy array (B, D)
+        features
+    w: numpy array (D,1)
+        weights
+    
+    Returns
+    -------
+    loss: float
+        negative log-likelihood
+        
+    """
+    prediction = tx@w
+    log_sum = np.sum(np.log(1+np.exp(prediction)))
+    return -y.T@prediction + log_sum
 
 def compute_logistic_gradient(y, tx, w):
-  """Logistic gradient for a mini-batch of B points
-
-  Parameters
-  ----------
-  y : numpy array
-      Targets vector (B,1)
-  tx : numpy array
-      Feature matrix (B,D)
-  w : numpy array
-      weights vector (D,1)
-
-  Returns
-  -------
-  sg : numpy array 
-      gradient of logistic loss (D,1)
-  """  
-  return None
+    """compute the gradient of loss.
+    
+    Parameters
+    ----------
+    y: numpy array (B,1)
+        targets
+    tx: numpy array (B, D)
+        features
+    w: numpy array (D,1)
+        weights
+    
+    Returns
+    -------
+    gradient: numpy array (D,1)
+        gradient of negative log likelihood
+        
+    """
+    return tx.T @ (sigmoid(tx@w)-y)
 
 def load_csv_data(data_path, sub_sample=False):
     """Loads data and returns y (class labels), tX (features) and ids (event ids)"""
