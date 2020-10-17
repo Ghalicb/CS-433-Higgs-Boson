@@ -57,7 +57,8 @@ def sigmoid(t):
   Returns
   -------
   sig(t): numpy array (B,1)
-
+  
+  Warning: this method can return values of 0. and 1.
   """
   #numerically stable version without useless overflow warnings
   
@@ -69,6 +70,41 @@ def sigmoid(t):
   top = np.ones_like(t)
   top[neg_mask] = z[neg_mask]
   return top / (1 + z)
+
+def compute_regularized_logistic_loss(y, tx, w, lambda_):
+  """Regularized Logistic loss. 
+
+  Parameters
+  ----------
+  y : numpy array
+    Targets vector (B,1)
+  tx : numpy array
+    Feature matrix (B,D)
+  w : numpy array
+    weights vector (D,1)
+  lambda_ : float
+    regularization constant
+  
+  Returns
+  -------
+  loss : float
+    regularized negative log-likelihood   
+  """  
+
+  B = len(y)
+  #smallest positive value we can have
+  min_value = np.nextafter(0,1)
+  
+  #avoiding numerical unstability i.e making pred in ]0,1[
+  pred = sigmoid(tx@w)
+  pred[pred<min_value] = min_value
+  
+  one_minus_pred = 1-pred
+  one_minus_pred[one_minus_pred<min_value] = min_value
+  
+  reg_term = lambda_*np.sum(w**2)
+  loss = -(1./B)*(y.T @ (np.log(pred)) + (1 - y).T @ (np.log(one_minus_pred))) + reg_term
+  return loss.item() 
 
 def compute_logistic_loss(y, tx, w):
   """Logistic loss. 
@@ -86,23 +122,31 @@ def compute_logistic_loss(y, tx, w):
   -------
   loss : float
     negative log-likelihood
-    
-  Warning: this method can return values of 0. and 1.
   """  
 
-  B = len(y)
-  #smallest positive value we can have
-  min_value = np.nextafter(0,1)
+  return compute_regularized_logistic_loss(y, tx, w, lambda_=0)
   
-  #avoiding numerical unstability i.e making pred in ]0,1[
-  pred = sigmoid(tx@w)
-  pred[pred<min_value] = min_value
-  
-  one_minus_pred = 1-pred
-  one_minus_pred[one_minus_pred<min_value] = min_value
-  
-  loss = -(1./B)*(y.T @ (np.log(pred)) + (1 - y).T @ (np.log(one_minus_pred)))
-  return loss.item() 
+def compute_regularized_logistic_gradient(y, tx, w, lambda_):
+  """Regularized Logistic gradient for a mini-batch of B points.
+
+  Parameters
+  ----------
+  y : numpy array
+    Targets vector (B,1)
+  tx : numpy array
+    Feature matrix (B,D)
+  w : numpy array
+    weights vector (D,1)
+  lambda_ : float
+    regularization constant  
+
+  Returns
+  -------
+  gradient : numpy array 
+    Gradient of logistic loss (D,1)
+  """  
+  reg_term = 2*lambda_*np.sum(w)
+  return tx.T @ (sigmoid(tx@w)-y)+reg_term
 
 def compute_logistic_gradient(y, tx, w):
   """Logistic gradient for a mini-batch of B points.
@@ -121,7 +165,7 @@ def compute_logistic_gradient(y, tx, w):
   gradient : numpy array 
     Gradient of logistic loss (D,1)
   """  
-  return tx.T @ (sigmoid(tx@w)-y)
+  return compute_regularized_logistic_gradient(y, tx, w, lambda_=0)
 
 
 def prepare_dimensions(y, tx):
@@ -196,6 +240,7 @@ def cross_validation_SGD(y, tx, K, initial_w, max_iters, gamma, B, loss_kind, se
     can take value in { "LEAST_SQUARE" , "LOGISTIC_REGRESSION" }
   seed : int
     Seed for index shuffling
+  
   Returns
   -------
   w_best : numpy array

@@ -4,11 +4,12 @@ from helpers import *
 
 loss_kinds = { 
   "LEAST_SQUARE" : (compute_mse_loss, compute_mse_gradient),
-  "LOGISTIC_REGRESSION" : (compute_logistic_loss, compute_logistic_gradient)
+  "LOGISTIC_REGRESSION" : (compute_logistic_loss, compute_logistic_gradient),
+  "REGULARIZED_LOGISTIC_REGRESSION" : (compute_regularized_logistic_loss, compute_regularized_logistic_gradient)
 }
 
 
-def SGD(y, tx, initial_w, max_iters, gamma, loss_kind, batch_size):
+def SGD(y, tx, initial_w, max_iters, gamma, loss_kind, batch_size, lambda_=None):
   """Linear regression using Stochastic Gradient Descent
 
   Parameters
@@ -50,8 +51,11 @@ def SGD(y, tx, initial_w, max_iters, gamma, loss_kind, batch_size):
       
     x_n = tx[indexes[start_id:end_id]].reshape(batch_size,-1)
     y_n = y[indexes[start_id:end_id]]
-    sg = gradient_function(y_n, x_n, w)
-    
+    if lambda_ :
+      sg = gradient_function(y_n, x_n, w, lambda_)
+    else:
+      sg = gradient_function(y_n, x_n, w)
+      
     w = w - gamma * sg
     
     n_iter += 1
@@ -63,8 +67,10 @@ def SGD(y, tx, initial_w, max_iters, gamma, loss_kind, batch_size):
     # Taking care of potentially smaller last minibatch
     if end_id > N:
       end_id = N
-    
-  loss = loss_function(y, tx, w)
+  if lambda_:  
+    loss = loss_function(y, tx, w, lambda_)
+  else:
+    loss = loss_function(y, tx, w)
   return (w, loss)
 
 
@@ -109,8 +115,6 @@ def least_squares_SGD(y, tx, initial_w, max_iters, gamma):
     number of iteration to run SGD
   gamma : float
     learning rate
-  loss_kind : string
-    can take value in { "LEAST_SQUARE" , "LOGISTIC_REGRESSION" }
   
   Returns
   -------
@@ -121,7 +125,20 @@ def least_squares_SGD(y, tx, initial_w, max_iters, gamma):
     
 
 def least_squares(y, tx):
-  """Least squares regression using normal equations"""
+  """Least squares regression using normal equations
+
+  Parameters
+  ----------
+  y : numpy array
+    Targets vector (N,) or (N,1)
+  tx : numpy array
+    Feature matrix (N,D)
+  
+  Returns
+  -------
+  (w, loss) : (numpy array (D,1), float)
+    weights and loss after ridge regression
+  """
   return ridge_regression(y, tx, 0)
 
 
@@ -154,10 +171,51 @@ def ridge_regression(y, tx, lambda_):
 
 
 def logistic_regression(y, tx, initial_w, max_iters, gamma):
-  """Logistic regression using gradient descent or SGD"""
+  """Logistic regression using gradient descent or SGD
+  
+  Parameters
+  ----------
+  y : numpy array
+    Targets vector (N,) or (N,1)
+  tx : numpy array
+    Feature matrix (N,D)
+  initial_w : numpy array
+    weights vector (D,) or (D,1)
+  max_iters : int
+    number of iteration to run SGD
+  gamma : float
+    learning rate
+  
+  Returns
+  -------
+  (w, loss) : (numpy array (D,1), float)
+    weights and loss after max_iters iterations of SGD  
+  """
+  
   return SGD(y, tx, initial_w, max_iters, gamma, "LOGISTIC_REGRESSION", 1)
 
 
 def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
-  """Regularized logistic regression using gradient descent or SGD"""
-  return SGD(y, tx, initial_w, max_iters, gamma, "REGULARIZED_LOGISTIC_REGRESSION", 1)
+  """Regularized logistic regression using gradient descent or SGD
+  
+  Parameters
+  ----------
+  y : numpy array
+    Targets vector (N,) or (N,1)
+  tx : numpy array
+    Feature matrix (N,D)
+  lambda_ : float
+    Regularization constant
+  initial_w : numpy array
+    weights vector (D,) or (D,1)
+  max_iters : int
+    number of iteration to run SGD
+  gamma : float
+    learning rate
+  
+  Returns
+  -------
+  (w, loss) : (numpy array (D,1), float)
+    weights and loss after max_iters iterations of SGD
+  """
+  return SGD(y, tx, initial_w, max_iters, gamma, "REGULARIZED_LOGISTIC_REGRESSION", 1, lambda_)
