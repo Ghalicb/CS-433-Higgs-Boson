@@ -1,5 +1,5 @@
 import numpy as np
-from proj1_helpers import *
+from helpers import *
 
 
 def SGD(y, tx, initial_w, max_iters, gamma, loss_kind, batch_size):

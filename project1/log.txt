@@ -1,0 +1,6 @@
+proj1_helpers.py:166: RuntimeWarning: overflow encountered in exp
+  return 1/(1+np.exp(-t))
+proj1_helpers.py:187: RuntimeWarning: overflow encountered in exp
+  log_sum = np.sum(np.log(1+np.exp(prediction)))
+  
+--> overflow encountered in exp function when doing logistic regression
