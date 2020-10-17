@@ -46,25 +46,41 @@ def compute_mse_gradient(y, tx, w):
   sg = -1/B * tx.T @ (y - tx @ w)
   return sg
 
+def sigmoid(t):
+    """apply the sigmoid function on t.
+    
+    Parameters
+    ----------
+    t: numpy array (B,1)
+    
+    Returns
+    -------
+    sig(t): numpy array (B,1)
+    
+    """
+    return np.where(t<-700, np.exp(t)/(1+np.exp(t)), 1/(1+np.exp(-t)))
 
-def compute_logistic_loss():
+def compute_logistic_loss(y, tx, w):
   """Logistic loss. 
 
   Parameters
   ----------
   y : numpy array
-    Targets vector (N,1)
+    Targets vector (B,1)
   tx : numpy array
-    Feature matrix (N,D)
+    Feature matrix (B,D)
   w : numpy array
     weights vector (D,1)
   
   Returns
   -------
   loss : float
+    negative log-likelihood
   """  
 
-  return None 
+  prediction = tx@w
+  log_sum = np.sum(np.log(1+np.exp(prediction)))
+  return -y.T@prediction + log_sum
 
 
 def compute_logistic_gradient(y, tx, w):
@@ -81,10 +97,10 @@ def compute_logistic_gradient(y, tx, w):
 
   Returns
   -------
-  sg : numpy array 
+  gradient : numpy array 
     Gradient of logistic loss (D,1)
   """  
-  return None
+  return tx.T @ (sigmoid(tx@w)-y)
 
 
 loss_kinds = { 
@@ -214,21 +230,6 @@ def cross_validation_SGD(y, tx, K, initial_w, max_iters, gamma, B, loss_kind, se
       w_best = w
 
   return w_best, training_errors, validation_errors
-
-
-def sigmoid(t):
-    """apply the sigmoid function on t.
-    
-    Parameters
-    ----------
-    t: numpy array (B,1)
-    
-    Returns
-    -------
-    sig(t): numpy array (B,1)
-    
-    """
-    return 1/(1+np.exp(-t))
 
 
 def load_csv_data(data_path, sub_sample=False):
