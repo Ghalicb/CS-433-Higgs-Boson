@@ -48,7 +48,6 @@ def compute_mse_gradient(y, tx, w):
 
 
 def sigmoid(t):
-<<<<<<< HEAD
   """apply the sigmoid function on t.
 
   Parameters
@@ -87,6 +86,8 @@ def compute_logistic_loss(y, tx, w):
   -------
   loss : float
     negative log-likelihood
+    
+  Warning: this method can return values of 0. and 1.
   """  
 
   B = len(y)

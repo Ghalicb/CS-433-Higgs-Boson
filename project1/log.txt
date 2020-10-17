@@ -11,3 +11,5 @@ solution: separate calculation for positive and negative values using a mask
 compute logistic loss:
 problem: sigmoid(Xw) can be rounded to 1 or 0 for large positive and negative values, so problems with log(sig(Xw)) if rounded to 0 or with log(1-Xw) if rounded to 1.
 Solution: clip values to the interval (min_value, 1-min_value) where min_value is the smallest positive value we can represent in python.
+best way to do it is in two steps and just removing the 0 in sig(Xw) and [1-sig(Xw)] (closest float after 0) because the precision of np.nextafter(0,1) is better than np.nextafter(1,-1) (the closest float before 1).
+So better to do it in logistic_loss instead of sigmoid()
