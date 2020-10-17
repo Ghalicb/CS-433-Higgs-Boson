@@ -216,12 +216,19 @@ def cross_validation_SGD(y, tx, K, initial_w, max_iters, gamma, B, loss_kind, se
   return w_best, training_errors, validation_errors
 
 
-def sigmoid(x):
-  """
-
-
-  """
-  return None 
+def sigmoid(t):
+    """apply the sigmoid function on t.
+    
+    Parameters
+    ----------
+    t: numpy array (B,1)
+    
+    Returns
+    -------
+    sig(t): numpy array (B,1)
+    
+    """
+    return 1/(1+np.exp(-t))
 
 
 def load_csv_data(data_path, sub_sample=False):
