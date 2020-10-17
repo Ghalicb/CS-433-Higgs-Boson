@@ -1,10 +1,6 @@
 import numpy as np
 from proj1_helpers import *
 
-loss_kinds = { 
-  "LEAST_SQUARE" : (compute_mse_loss, compute_mse_gradient),
-  "LOGISTIC_REGRESSION" : (compute_logistic_loss, compute_logistic_gradient)
-}
 
 def SGD(y, tx, initial_w, max_iters, gamma, loss_kind, batch_size):
   """Linear regression using Stochastic Gradient Descent
