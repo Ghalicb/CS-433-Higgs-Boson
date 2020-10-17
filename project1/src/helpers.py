@@ -43,24 +43,32 @@ def compute_mse_gradient(y, tx, w):
   """ 
   B = len(y)
   e = y - tx @ w
-  sg = -1/B * tx.T @ (y - tx @ w)
+  sg = -1./B * tx.T @ (y - tx @ w)
   return sg
 
 
 def sigmoid(t):
-    """apply the sigmoid function on t.
-    
-    Parameters
-    ----------
-    t: numpy array (B,1)
-    
-    Returns
-    -------
-    sig(t): numpy array (B,1)
-    
-    """
-    return np.where(t <- 700, np.exp(t)/(1+np.exp(t)), 1/(1+np.exp(-t)))
+  """apply the sigmoid function on t.
 
+  Parameters
+  ----------
+  t: numpy array (B,1)
+
+  Returns
+  -------
+  sig(t): numpy array (B,1)
+
+  """
+  #numerically stable version without useless overflow warnings
+  
+  pos_mask = (t >= 0)
+  neg_mask = (t < 0)
+  z = np.zeros_like(t)
+  z[pos_mask] = np.exp(-t[pos_mask])
+  z[neg_mask] = np.exp(t[neg_mask])
+  top = np.ones_like(t)
+  top[neg_mask] = z[neg_mask]
+  return top / (1 + z)
 
 def compute_logistic_loss(y, tx, w):
   """Logistic loss. 
@@ -78,11 +86,23 @@ def compute_logistic_loss(y, tx, w):
   -------
   loss : float
     negative log-likelihood
+    
+  Warning: this method can return values of 0. and 1.
   """  
-  prediction = tx @ w
-  log_sum = np.sum(np.log(1 + np.exp(prediction)))
-  return -y.T @ prediction + log_sum
 
+  B = len(y)
+  #smallest positive value we can have
+  min_value = np.nextafter(0,1)
+  
+  #avoiding numerical unstability i.e making pred in ]0,1[
+  pred = sigmoid(tx@w)
+  pred[pred<min_value] = min_value
+  
+  one_minus_pred = 1-pred
+  one_minus_pred[one_minus_pred<min_value] = min_value
+  
+  loss = -(1./B)*(y.T @ (np.log(pred)) + (1 - y).T @ (np.log(one_minus_pred)))
+  return loss.item() 
 
 def compute_logistic_gradient(y, tx, w):
   """Logistic gradient for a mini-batch of B points.
