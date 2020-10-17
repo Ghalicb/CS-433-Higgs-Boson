@@ -46,7 +46,9 @@ def compute_mse_gradient(y, tx, w):
   sg = -1./B * tx.T @ (y - tx @ w)
   return sg
 
+
 def sigmoid(t):
+<<<<<<< HEAD
   """apply the sigmoid function on t.
 
   Parameters
@@ -86,6 +88,7 @@ def compute_logistic_loss(y, tx, w):
   loss : float
     negative log-likelihood
   """  
+
   B = len(y)
   #smallest positive value we can have
   min_value = np.nextafter(0,1)
@@ -99,7 +102,6 @@ def compute_logistic_loss(y, tx, w):
   
   loss = -(1./B)*(y.T @ (np.log(pred)) + (1 - y).T @ (np.log(one_minus_pred)))
   return loss.item() 
-
 
 def compute_logistic_gradient(y, tx, w):
   """Logistic gradient for a mini-batch of B points.
@@ -119,12 +121,6 @@ def compute_logistic_gradient(y, tx, w):
     Gradient of logistic loss (D,1)
   """  
   return tx.T @ (sigmoid(tx@w)-y)
-
-
-loss_kinds = { 
-  "LEAST_SQUARE" : (compute_mse_loss, compute_mse_gradient),
-  "LOGISTIC_REGRESSION" : (compute_logistic_loss, compute_logistic_gradient)
-}
 
 
 def prepare_dimensions(y, tx):
@@ -212,7 +208,7 @@ def cross_validation_SGD(y, tx, K, initial_w, max_iters, gamma, B, loss_kind, se
 
   training_errors = []
   validation_errors = []
-  min_error = 1e16 # As large as possible
+  min_error = np.inf
 
   for k in range(K):
     # Take the k-th row of tx and y

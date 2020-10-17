@@ -2,6 +2,12 @@ import numpy as np
 from helpers import *
 
 
+loss_kinds = { 
+  "LEAST_SQUARE" : (compute_mse_loss, compute_mse_gradient),
+  "LOGISTIC_REGRESSION" : (compute_logistic_loss, compute_logistic_gradient)
+}
+
+
 def SGD(y, tx, initial_w, max_iters, gamma, loss_kind, batch_size):
   """Linear regression using Stochastic Gradient Descent
 
@@ -86,6 +92,7 @@ def least_squares_GD(y, tx, initial_w, max_iters, gamma):
   """
   return SGD(y, tx, initial_w, max_iters, gamma, "LEAST_SQUARE", len(y))
 
+
 def least_squares_SGD(y, tx, initial_w, max_iters, gamma):
   """Linear regression using Stochastic Gradient Descent.
   A special case of SGD with a MSE loss and a mini-batch size of 1
@@ -137,7 +144,11 @@ def ridge_regression(y, tx, lambda_):
   """
   y, tx = prepare_dimensions(y, tx)
   N, D = np.shape(tx)
-  w, _, _, _ = np.linalg.lstsq(tx.T @ tx + 2 * N * lambda_ * np.eye(D), tx.T @ y, rcond=None)
+  w, _, _, _ = np.linalg.lstsq(
+    tx.T @ tx + 2 * N * lambda_ * np.eye(D),
+    tx.T @ y,
+    rcond=None
+  )
   loss = compute_mse_loss(y, tx, w)
   return (w, loss)
 
