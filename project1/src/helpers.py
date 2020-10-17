@@ -258,13 +258,13 @@ def cross_validation_SGD(y, tx, K, initial_w, max_iters, gamma, B, loss_kind, se
 
   for k in range(K):
     # Take the k-th row of tx and y
-    f = lambda a: a[k_indices[k]][:]
-    tx_train, y_train = map(f, (tx, y))
-
-    # Take all but the k-th row of tx and y
     f = lambda a: a[ np.concatenate( [
       k_indices[i] for i in range(len(k_indices)) if i != k
     ] )][:]
+    tx_train, y_train = map(f, (tx, y))
+
+    # Take all but the k-th row of tx and y
+    f = lambda a: a[k_indices[k]][:]
     tx_test, y_test = map(f, (tx, y))
 
     # Train
