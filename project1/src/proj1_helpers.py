@@ -4,6 +4,89 @@ import csv
 import numpy as np
 
 
+def compute_mse_loss(y, tx, w):
+  """Mean Square Error loss
+
+  Parameters
+  ----------
+  y : numpy array
+    Targets vector (N,1)
+  tx : numpy array
+    Feature matrix (N,D)
+  w : numpy array
+    weights vector (D,1)
+  
+  Returns
+  -------
+  loss : float
+  """  
+  e = y - tx @ w
+  return (1./(2*len(y)) * e.T @ e).item() 
+
+
+def compute_mse_gradient(y, tx, w):
+  """Mean Square Error gradient for a mini-batch of B points
+
+  Parameters
+  ----------
+  y : numpy array
+    Targets vector (B,1)
+  tx : numpy array
+    Feature matrix (B,D)
+  w : numpy array
+    weights vector (D,1)
+  
+  Returns
+  -------
+  sg : numpy array 
+    gradient of mse loss (D,1)
+  """ 
+  B = len(y)
+  e = y - tx @ w
+  sg = -1/B * tx.T @ (y - tx @ w)
+  return sg
+
+
+def compute_logistic_loss():
+  """Logistic loss. 
+
+  Parameters
+  ----------
+  y : numpy array
+    Targets vector (N,1)
+  tx : numpy array
+    Feature matrix (N,D)
+  w : numpy array
+    weights vector (D,1)
+  
+  Returns
+  -------
+  loss : float
+  """  
+
+  return None 
+
+
+def compute_logistic_gradient(y, tx, w):
+  """Logistic gradient for a mini-batch of B points.
+
+  Parameters
+  ----------
+  y : numpy array
+    Targets vector (B,1)
+  tx : numpy array
+    Feature matrix (B,D)
+  w : numpy array
+    weights vector (D,1)
+
+  Returns
+  -------
+  sg : numpy array 
+    Gradient of logistic loss (D,1)
+  """  
+  return None
+
+
 loss_kinds = { 
   "LEAST_SQUARE" : (compute_mse_loss, compute_mse_gradient),
   "LOGISTIC_REGRESSION" : (compute_logistic_loss, compute_logistic_gradient)
@@ -28,26 +111,6 @@ def prepare_dimensions(y, tx):
   y_reshaped = y.reshape(-1, 1)
   tx_reshaped = tx.reshape(len(y_reshaped), -1)
   return y_reshaped, tx_reshaped
-
-
-def compute_mse_loss(y, tx, w):
-  """Mean Square Error loss
-
-  Parameters
-  ----------
-  y : numpy array
-    Targets vector (N,1)
-  tx : numpy array
-    Feature matrix (N,D)
-  w : numpy array
-    weights vector (D,1)
-  
-  Returns
-  -------
-  loss : float
-  """  
-  e = y - tx @ w
-  return (1./(2*len(y)) * e.T @ e).item() 
 
 
 def build_k_indices(y, K, seed):
@@ -153,75 +216,12 @@ def cross_validation_SGD(y, tx, K, initial_w, max_iters, gamma, B, loss_kind, se
   return w_best, training_errors, validation_errors
 
 
-def compute_mse_gradient(y, tx, w):
-  """Mean Square Error gradient for a mini-batch of B points
-
-  Parameters
-  ----------
-  y : numpy array
-    Targets vector (B,1)
-  tx : numpy array
-    Feature matrix (B,D)
-  w : numpy array
-    weights vector (D,1)
-  
-  Returns
-  -------
-  sg : numpy array 
-    gradient of mse loss (D,1)
-  """ 
-  B = len(y)
-  e = y - tx @ w
-  sg = -1/B * tx.T @ (y - tx @ w)
-  return sg
-
-
 def sigmoid(x):
   """
 
 
   """
   return None 
-
-
-def compute_logistic_loss():
-  """Logistic loss. 
-
-  Parameters
-  ----------
-  y : numpy array
-    Targets vector (N,1)
-  tx : numpy array
-    Feature matrix (N,D)
-  w : numpy array
-    weights vector (D,1)
-  
-  Returns
-  -------
-  loss : float
-  """  
-
-  return None 
-
-
-def compute_logistic_gradient(y, tx, w):
-  """Logistic gradient for a mini-batch of B points.
-
-  Parameters
-  ----------
-  y : numpy array
-    Targets vector (B,1)
-  tx : numpy array
-    Feature matrix (B,D)
-  w : numpy array
-    weights vector (D,1)
-
-  Returns
-  -------
-  sg : numpy array 
-    Gradient of logistic loss (D,1)
-  """  
-  return None
 
 
 def load_csv_data(data_path, sub_sample=False):
