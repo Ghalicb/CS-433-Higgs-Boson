@@ -87,12 +87,6 @@ def compute_logistic_gradient(y, tx, w):
   return None
 
 
-loss_kinds = { 
-  "LEAST_SQUARE" : (compute_mse_loss, compute_mse_gradient),
-  "LOGISTIC_REGRESSION" : (compute_logistic_loss, compute_logistic_gradient)
-}
-
-
 def prepare_dimensions(y, tx):
   """Reshape input data to two dimensions, if the dimensions are already correct, they stay the same
 
@@ -178,7 +172,7 @@ def cross_validation_SGD(y, tx, K, initial_w, max_iters, gamma, B, loss_kind, se
 
   training_errors = []
   validation_errors = []
-  min_error = 1e16 # As large as possible
+  min_error = np.inf
 
   for k in range(K):
     # Take the k-th row of tx and y
