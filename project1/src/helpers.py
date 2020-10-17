@@ -46,6 +46,7 @@ def compute_mse_gradient(y, tx, w):
   sg = -1/B * tx.T @ (y - tx @ w)
   return sg
 
+
 def sigmoid(t):
     """apply the sigmoid function on t.
     
@@ -58,7 +59,8 @@ def sigmoid(t):
     sig(t): numpy array (B,1)
     
     """
-    return np.where(t<-700, np.exp(t)/(1+np.exp(t)), 1/(1+np.exp(-t)))
+    return np.where(t <- 700, np.exp(t)/(1+np.exp(t)), 1/(1+np.exp(-t)))
+
 
 def compute_logistic_loss(y, tx, w):
   """Logistic loss. 
@@ -77,10 +79,9 @@ def compute_logistic_loss(y, tx, w):
   loss : float
     negative log-likelihood
   """  
-
-  prediction = tx@w
-  log_sum = np.sum(np.log(1+np.exp(prediction)))
-  return -y.T@prediction + log_sum
+  prediction = tx @ w
+  log_sum = np.sum(np.log(1 + np.exp(prediction)))
+  return -y.T @ prediction + log_sum
 
 
 def compute_logistic_gradient(y, tx, w):
