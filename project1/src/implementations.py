@@ -49,7 +49,7 @@ def SGD(y, tx, initial_w, max_iters, gamma, loss_kind, batch_size, lambda_=None)
     if start_id == 0 and batch_size != N:
       np.random.shuffle(indexes) 
       
-    x_n = tx[indexes[start_id:end_id]].reshape(batch_size,-1)
+    x_n = tx[indexes[start_id:end_id]]
     y_n = y[indexes[start_id:end_id]]
     if lambda_ :
       sg = gradient_function(y_n, x_n, w, lambda_)

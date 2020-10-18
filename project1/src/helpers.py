@@ -91,7 +91,6 @@ def compute_regularized_logistic_loss(y, tx, w, lambda_):
     regularized negative log-likelihood   
   """  
 
-  B = len(y)
   #smallest positive value we can have
   min_value = np.nextafter(0,1)
   
@@ -103,7 +102,7 @@ def compute_regularized_logistic_loss(y, tx, w, lambda_):
   one_minus_pred[one_minus_pred<min_value] = min_value
   
   reg_term = lambda_*np.sum(w**2)
-  loss = -(1./B)*(y.T @ (np.log(pred)) + (1 - y).T @ (np.log(one_minus_pred))) + reg_term
+  loss = -(y.T @ (np.log(pred)) + (1 - y).T @ (np.log(one_minus_pred))) + reg_term
   return loss.item() 
 
 def compute_logistic_loss(y, tx, w):
@@ -216,81 +215,17 @@ def build_k_indices(y, K, seed):
   res = np.array(k_indices)
   return res
 
-
-def cross_validation_SGD(y, tx, K, initial_w, max_iters, gamma, B, loss_kind, seed):
-  """K-fold cross validation for stochastic gradient descent.
-
-  Parameters
-  ----------
-  y : numpy array
-    Targets vector (N,1)
-  tx : numpy array
-    Feature matrix (N,D)
-  K : int
-    Number of folds
-  initial_w : numpy array
-    weights vector (D,) or (D,1)
-  max_iters : int
-    number of iteration to run SGD
-  gamma : float
-    Learning rate for SGD
-  B : int
-    Size of mini-batches
-  loss_kind : string
-    can take value in { "LEAST_SQUARE" , "LOGISTIC_REGRESSION" }
-  seed : int
-    Seed for index shuffling
-  
-  Returns
-  -------
-  w_best : numpy array
-    Weight vector (D,1) with smallest validation error
-  training_errors : list
-    Training error for each fold (K elements)
-  validation_errors : list
-    Validation error for each fold (K elements)
-  """
-  k_indices = build_k_indices(y, K, seed)
-
-  training_errors = []
-  validation_errors = []
-  min_error = np.inf
-
-  for k in range(K):
-    # Take the k-th row of tx and y
-    f = lambda a: a[ np.concatenate( [
-      k_indices[i] for i in range(len(k_indices)) if i != k
-    ] )][:]
-    tx_train, y_train = map(f, (tx, y))
-
-    # Take all but the k-th row of tx and y
-    f = lambda a: a[k_indices[k]][:]
-    tx_test, y_test = map(f, (tx, y))
-
-    # Train
-    w, loss_tr = SGD(
-      y_train,
-      tx_train,
-      initial_w,
-      max_iters,
-      gamma,
-      loss_kind,
-      batch_size
-    )
-    # Test
-    algo_loss = loss_kinds[loss_kind][0]
-    loss_te = algo_loss(y_test, tx_test, w)
-
-    training_errors.append(loss_tr)
-    validation_errors.append(loss_te)
-
-    # Keep the weights that give the lowest loss_te
-    if loss_te < min_error:
-      min_error = loss_te
-      w_best = w
-
-  return w_best, training_errors, validation_errors
-
+def build_poly(x, degree):
+    """polynomial basis functions for input data x, for j=0 up to j=degree."""
+    # ***************************************************
+    # polynomial basis function
+    # this function should return the matrix formed
+    # by applying the polynomial basis to the input data
+    # ***************************************************
+    out = np.ones((x.shape[0],1))
+    for d in range(degree):
+        out = np.hstack((out,(x**(d+1))))
+    return out
 
 def load_csv_data(data_path, sub_sample=False):
   """Loads data and returns y (class labels), tX (features) and ids (event ids)"""
