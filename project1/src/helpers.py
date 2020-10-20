@@ -105,6 +105,7 @@ def compute_regularized_logistic_loss(y, tx, w, lambda_):
   loss = -(y.T @ (np.log(pred)) + (1 - y).T @ (np.log(one_minus_pred))) + reg_term
   return loss.item() 
 
+
 def compute_logistic_loss(y, tx, w):
   """Logistic loss. 
 
@@ -122,9 +123,9 @@ def compute_logistic_loss(y, tx, w):
   loss : float
     negative log-likelihood
   """  
-
   return compute_regularized_logistic_loss(y, tx, w, lambda_=0)
   
+
 def compute_regularized_logistic_gradient(y, tx, w, lambda_):
   """Regularized Logistic gradient for a mini-batch of B points.
 
@@ -146,6 +147,7 @@ def compute_regularized_logistic_gradient(y, tx, w, lambda_):
   """  
   reg_term = 2*lambda_*np.sum(w)
   return tx.T @ (sigmoid(tx@w)-y)+reg_term
+
 
 def compute_logistic_gradient(y, tx, w):
   """Logistic gradient for a mini-batch of B points.
@@ -215,6 +217,7 @@ def build_k_indices(y, K, seed):
   res = np.array(k_indices)
   return res
 
+
 def build_poly(x, degree):
     """polynomial basis functions for input data x, for j=0 up to j=degree."""
     # ***************************************************
@@ -226,6 +229,8 @@ def build_poly(x, degree):
     for d in range(degree):
         out = np.hstack((out,(x**(d+1))))
     return out
+    # return np.column_stack([ np.power(x, d) for d in range(degree+1) ])
+
 
 def load_csv_data(data_path, sub_sample=False):
   """Loads data and returns y (class labels), tX (features) and ids (event ids)"""

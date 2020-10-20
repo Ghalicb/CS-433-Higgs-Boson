@@ -1,6 +1,7 @@
 from helpers import *
 from implementations import *
 
+
 def cross_validation_SGD(y, tx, K, initial_w, max_iters, gamma, batch_size, loss_kind, seed, lambda_=None):
   """K-fold cross validation for stochastic gradient descent.
 
@@ -42,12 +43,12 @@ def cross_validation_SGD(y, tx, K, initial_w, max_iters, gamma, batch_size, loss
   min_error = np.inf
 
   for k in range(K):
-    # Take the k-th row of tx and y
+    # Take all but the k-th row of tx and y
     f = lambda a: a[ np.concatenate( [
       k_indices[i] for i in range(len(k_indices)) if i != k
     ] )][:]
     tx_train, y_train = map(f, (tx, y))
-    # Take all but the k-th row of tx and y
+    # Take the k-th row of tx and y
     f = lambda a: a[k_indices[k]][:]
     tx_test, y_test = map(f, (tx, y))
 
@@ -78,6 +79,7 @@ def cross_validation_SGD(y, tx, K, initial_w, max_iters, gamma, batch_size, loss
       w_best = w
 
   return w_best, training_errors, validation_errors
+
 
 def cross_validation_ridge(y, tx, K, seed, lambda_=0):
   """K-fold cross validation for stochastic gradient descent.
