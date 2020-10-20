@@ -1,5 +1,6 @@
 import numpy as np
-from helpers import *
+from helpers import prepare_dimensions
+from losses import *
 
 
 loss_kinds = { 
