@@ -1,6 +1,32 @@
 from helpers import *
 from implementations import *
 
+def build_k_indices(y, K, seed):
+  """Build k indices for k-fold cross-validation.
+
+  Parameters
+  ----------
+  y : numpy array
+    Targets vector (N,1)
+  K : int
+    Number of folds
+  seed : int
+    Seed for index shuffling
+  Returns
+  -------
+  res : numpy array
+    2-dimensional array with shuffled indices arranged in K rows
+  """
+  num_row = y.shape[0]
+  interval = int(num_row / K)
+  np.random.seed(seed)
+  # Shuffle (1, ..., num_row)
+  indices = np.random.permutation(num_row)
+  # Arrange indices into K lists
+  k_indices = [indices[k * interval: (k + 1) * interval] for k in range(K)]
+  res = np.array(k_indices)
+  return res
+
 
 def cross_validation_SGD(y, tx, K, initial_w, max_iters, gamma, batch_size, loss_kind, seed, lambda_=None):
   """K-fold cross validation for stochastic gradient descent.
@@ -44,27 +70,15 @@ def cross_validation_SGD(y, tx, K, initial_w, max_iters, gamma, batch_size, loss
 
   for k in range(K):
     # Take all but the k-th row of tx and y
-    f = lambda a: a[ np.concatenate( [
-      k_indices[i] for i in range(len(k_indices)) if i != k
-    ] )][:]
-    tx_train, y_train = map(f, (tx, y))
+    tx_train, y_train = map(lambda a: a[np.delete(k_indices, k).flatten()], (tx, y))
     # Take the k-th row of tx and y
-    f = lambda a: a[k_indices[k]][:]
-    tx_test, y_test = map(f, (tx, y))
+    tx_test, y_test = map(lambda a: a[k_indices[k]], (tx, y))
 
     # Train
-    w, loss_tr = SGD(
-      y_train,
-      tx_train,
-      initial_w,
-      max_iters,
-      gamma,
-      loss_kind,
-      batch_size,
-      lambda_
-    )
+    w, loss_tr = SGD(y_train, tx_train, initial_w, max_iters, gamma, loss_kind, batch_size, lambda_)
     # Test
     algo_loss = loss_kinds[loss_kind][0]
+
     if lambda_:
       loss_te = algo_loss(y_test, tx_test, w, lambda_)
     else:
@@ -114,19 +128,15 @@ def cross_validation_ridge(y, tx, K, seed, lambda_=0):
   min_error = np.inf
 
   for k in range(K):
-    # Take the k-th row of tx and y
-    f = lambda a: a[ np.concatenate( [
-      k_indices[i] for i in range(len(k_indices)) if i != k
-    ] )][:]
-    tx_train, y_train = map(f, (tx, y))
     # Take all but the k-th row of tx and y
-    f = lambda a: a[k_indices[k]][:]
-    tx_test, y_test = map(f, (tx, y))
+    tx_train, y_train = map(lambda a: a[np.delete(k_indices, k).flatten()], (tx, y))
+    # Take the k-th row of tx and y
+    tx_test, y_test = map(lambda a: a[k_indices[k]], (tx, y))
 
     # Train
     w, loss_tr = ridge_regression(y_train, tx_train, lambda_)
     
-
+    # Test
     loss_te = compute_mse_loss(y_test, tx_test, w)
 
     training_errors.append(loss_tr)
