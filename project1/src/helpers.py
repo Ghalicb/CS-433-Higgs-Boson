@@ -31,11 +31,25 @@ def build_poly(x, degree):
     # this function should return the matrix formed
     # by applying the polynomial basis to the input data
     # ***************************************************
-    out = np.ones((x.shape[0],1))
-    for d in range(degree):
-        out = np.hstack((out,(x**(d+1))))
-    return out
-    # return np.column_stack([ np.power(x, d) for d in range(degree+1) ])
+    n, d = x.shape
+    accu_expanded = np.c_[np.ones((n,1)),x]
+
+    for deg in range(degree):
+        accu_expanded = np.c_[accu_expanded, x**(deg+1)]
+        
+    feature_pairs = []
+    for i in range(d):
+        for j in range(i+1,d):
+            feature_pairs.append([i,j])
+    
+    pair_columns = np.zeros((n, len(feature_pairs)))
+
+    for i, pair in enumerate(feature_pairs):
+        pair_columns[:, i] = x[:, pair[0]] * x[:, pair[1]]
+
+    accu_expanded =  np.c_[accu_expanded, pair_columns]
+
+    return accu_expanded
 
 
 def load_csv_data(data_path, sub_sample=False):
