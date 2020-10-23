@@ -86,19 +86,18 @@ def compute_regularized_logistic_loss(y, tx, w, lambda_):
   loss : float
     regularized negative log-likelihood   
   """  
-
-  #smallest positive value we can have
-  min_value = np.nextafter(0,1)
+  # Smallest positive value we can have
+  min_value = np.nextafter(0, 1)
   
-  #avoiding numerical unstability i.e making pred in ]0,1[
-  pred = sigmoid(tx@w)
-  pred[pred<min_value] = min_value
+  # Avoiding numerical unstability i.e making pred in ]0,1[
+  pred = sigmoid(tx @ w)
+  pred[pred < min_value] = min_value
   
-  one_minus_pred = 1-pred
-  one_minus_pred[one_minus_pred<min_value] = min_value
+  one_minus_pred = 1 - pred
+  one_minus_pred[one_minus_pred < min_value] = min_value
   
-  reg_term = lambda_*np.sum(w**2)
-  loss = -(y.T @ (np.log(pred)) + (1 - y).T @ (np.log(one_minus_pred))) + reg_term
+  reg_term = lambda_ * np.sum(w ** 2)
+  loss = -(y.T @ np.log(pred) + (1 - y).T @ np.log(one_minus_pred)) + reg_term
   return loss.item() 
 
 
@@ -119,7 +118,7 @@ def compute_logistic_loss(y, tx, w):
   loss : float
     negative log-likelihood
   """  
-  return compute_regularized_logistic_loss(y, tx, w, lambda_=0)
+  return compute_regularized_logistic_loss(y, tx, w, lambda_ = 0)
   
 
 def compute_regularized_logistic_gradient(y, tx, w, lambda_):
@@ -141,8 +140,8 @@ def compute_regularized_logistic_gradient(y, tx, w, lambda_):
   gradient : numpy array 
     Gradient of logistic loss (D,1)
   """  
-  reg_term = 2*lambda_*np.sum(w)
-  return tx.T @ (sigmoid(tx@w)-y)+reg_term
+  reg_term = 2 * lambda_ * np.sum(w)
+  return tx.T @ (sigmoid(tx @ w) - y) + reg_term
 
 
 def compute_logistic_gradient(y, tx, w):
