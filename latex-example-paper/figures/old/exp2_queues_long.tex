@@ -1,0 +1,118 @@
+% This file was created by tikzplotlib v0.9.1.
+\begin{tikzpicture}
+
+  \definecolor{color0}{rgb}{0.12156862745098,0.466666666666667,0.705882352941177}
+\definecolor{color1}{rgb}{1,0.498039215686275,0.0549019607843137}
+
+\begin{axis}[
+legend cell align={left},
+legend style={fill opacity=0.8, draw opacity=1, text opacity=1, draw=white!80!black},
+tick align=outside,
+tick pos=left,
+x grid style={white!69.0196078431373!black},
+xlabel={Probability that arriving patient has type 3 during training},
+xmin=0, xmax=1,
+xtick style={color=black},
+xtick={0,0.2,0.4,0.6,0.8,1},
+xticklabels={0.0,0.2,0.4,0.6,0.8,1.0},
+y grid style={white!69.0196078431373!black},
+ymin=-1, ymax=101,
+ytick style={color=black}
+]
+\path [draw=color0]
+(axis cs:0.1,51.92)
+--(axis cs:0.1,85.4);
+
+\path [draw=color0]
+(axis cs:0.3,49.96)
+--(axis cs:0.3,75.84);
+
+\path [draw=color0]
+(axis cs:0.5,47.12)
+--(axis cs:0.5,73.4);
+
+\path [draw=color0]
+(axis cs:0.7,28.96)
+--(axis cs:0.7,51.52);
+
+\path [draw=color0]
+(axis cs:0.9,23.36)
+--(axis cs:0.9,26.44);
+
+\path [draw=color1]
+(axis cs:0.1,19.48)
+--(axis cs:0.1,26);
+
+\path [draw=color1]
+(axis cs:0.3,23.16)
+--(axis cs:0.3,27.2);
+
+\path [draw=color1]
+(axis cs:0.5,23.2)
+--(axis cs:0.5,26.44);
+
+\path [draw=color1]
+(axis cs:0.7,23.56)
+--(axis cs:0.7,26.84);
+
+\path [draw=color1]
+(axis cs:0.9,23.36)
+--(axis cs:0.9,26.4);
+
+\addplot [semithick, color0, mark=-, mark size=2, mark options={solid}, only marks]
+table {%
+0.1 51.92
+0.3 49.96
+0.5 47.12
+0.7 28.96
+0.9 23.36
+};
+\addlegendentry{Proportion of patients of type 3 in queue 3}
+\addplot [semithick, color0, mark=-, mark size=2, mark options={solid}, only marks]
+table {%
+0.1 85.4
+0.3 75.84
+0.5 73.4
+0.7 51.52
+0.9 26.44
+};
+\addlegendentry{Proportion of patients of type 3 in queue 3}
+\addplot [semithick, color1, mark=-, mark size=2, mark options={solid}, only marks]
+table {%
+0.1 19.48
+0.3 23.16
+0.5 23.2
+0.7 23.56
+0.9 23.36
+};
+\addlegendentry{Proportion of patients of type 3 in queue 3}
+\addplot [semithick, color1, mark=-, mark size=2, mark options={solid}, only marks]
+table {%
+0.1 26
+0.3 27.2
+0.5 26.44
+0.7 26.84
+0.9 26.4
+};
+\addlegendentry{Proportion of patients of type 3 in queue 3}
+\addplot [semithick, color0]
+table {%
+0.1 74.9
+0.3 72
+0.5 50.6
+0.7 45.6
+0.9 24.9
+};
+\addlegendentry{Proportion of patients of type 3 in queue 3}
+\addplot [semithick, color1]
+table {%
+0.1 23.4
+0.3 25
+0.5 24.6
+0.7 24.8
+0.9 24.8
+};
+\addlegendentry{Proportion of patients of type 3 in queue 3}
+\end{axis}
+
+\end{tikzpicture}
