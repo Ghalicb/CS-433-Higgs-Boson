@@ -169,7 +169,7 @@ def ridge_regression(y, tx, lambda_):
     rcond=None
   )
   loss = compute_mse_loss(y, tx, w)
-  reg_term = lambda_*np.sum(w**2)
+  reg_term = lambda_ * np.sum(w ** 2)
   loss += reg_term
   return (w, loss)
 

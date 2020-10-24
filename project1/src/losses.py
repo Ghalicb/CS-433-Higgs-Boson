@@ -42,6 +42,7 @@ def compute_mse_gradient(y, tx, w):
   sg = -1./B * tx.T @ (e)
   return sg
 
+
 def sigmoid(t):
   """apply the sigmoid function on t.
 
