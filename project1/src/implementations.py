@@ -26,14 +26,16 @@ def SGD(y, tx, initial_w, max_iters, gamma, loss_kind, batch_size, lambda_ = 0):
   gamma : float
     learning rate
   loss_kind : string
-    can take value in { "LEAST_SQUARE" , "LOGISTIC_REGRESSION" }
+    can take value in { "LEAST_SQUARE" , "LOGISTIC_REGRESSION", "REGULARIZED_LOGISTIC_REGRESSION"}
   batch_size : int
     size of a minibatch
+  lamda_ : float, optional
+    regularization parameter to use if loss_kind = "REGULARIZED_LOGISTIC_REGRESSION". The default is 0
   
   Returns
   -------
-  (w, loss) : (numpy array (D,1), float)
-      weights and loss after max_iters iterations of SGD
+  (w, loss) : (numpy array, float)
+      weights (D,1) and loss after max_iters iterations of SGD
   """
   y, tx = prepare_dimensions(y, tx)
   N = len(y)
@@ -46,7 +48,7 @@ def SGD(y, tx, initial_w, max_iters, gamma, loss_kind, batch_size, lambda_ = 0):
   end_id = batch_size
   
   while n_iter < max_iters:
-    # Reshuffle indexes at the beginning of epoch if minibatches are used
+    # Reshuffle indexes at the beginning of epoch if minibatches is not whole dataset
     if start_id == 0 and batch_size != N:
       np.random.shuffle(indexes) 
       
@@ -56,7 +58,6 @@ def SGD(y, tx, initial_w, max_iters, gamma, loss_kind, batch_size, lambda_ = 0):
       sg = gradient_function(y_n, x_n, w, lambda_)
     else:
       sg = gradient_function(y_n, x_n, w)
-      
     w = w - gamma * sg
     
     n_iter += 1
@@ -94,8 +95,8 @@ def least_squares_GD(y, tx, initial_w, max_iters, gamma):
   
   Returns
   -------
-  (w, loss) : (numpy array (D,1), float)
-      weights and loss after max_iters iterations of GD
+  (w, loss) : (numpy array, float)
+      weights (D,1) and loss after max_iters iterations of GD
   """
   return SGD(y, tx, initial_w, max_iters, gamma, "LEAST_SQUARE", len(y))
 
@@ -119,8 +120,8 @@ def least_squares_SGD(y, tx, initial_w, max_iters, gamma):
   
   Returns
   -------
-  (w, loss) : (numpy array (D,1), float)
-    weights and loss after max_iters iterations of SGD
+  (w, loss) : (numpy array, float)
+    weights (D,1) and loss after max_iters iterations of SGD
   """
   return SGD(y, tx, initial_w, max_iters, gamma, "LEAST_SQUARE", 1)
     
@@ -137,8 +138,8 @@ def least_squares(y, tx):
   
   Returns
   -------
-  (w, loss) : (numpy array (D,1), float)
-    weights and loss after ridge regression
+  (w, loss) : (numpy array, float)
+    weights (D,1) and loss after ridge regression
   """
   return ridge_regression(y, tx, 0)
 
@@ -157,8 +158,8 @@ def ridge_regression(y, tx, lambda_):
   
   Returns
   -------
-  (w, loss) : (numpy array (D,1), float)
-    weights and loss after ridge regression
+  (w, loss) : (numpy array, float)
+    weights (D,1) and loss after ridge regression
   """
   y, tx = prepare_dimensions(y, tx)
   N, D = np.shape(tx)
@@ -168,6 +169,8 @@ def ridge_regression(y, tx, lambda_):
     rcond=None
   )
   loss = compute_mse_loss(y, tx, w)
+  reg_term = lambda_*np.sum(w**2)
+  loss += reg_term
   return (w, loss)
 
 
@@ -189,8 +192,8 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
   
   Returns
   -------
-  (w, loss) : (numpy array (D,1), float)
-    weights and loss after max_iters iterations of SGD  
+  (w, loss) : (numpy array, float)
+    weights (D,1) and loss after max_iters iterations of SGD  
   """
   
   return SGD(y, tx, initial_w, max_iters, gamma, "LOGISTIC_REGRESSION", 1)
@@ -216,7 +219,7 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
   
   Returns
   -------
-  (w, loss) : (numpy array (D,1), float)
-    weights and loss after max_iters iterations of SGD
+  (w, loss) : (numpy array, float)
+    weights (D,1) and loss after max_iters iterations of SGD
   """
   return SGD(y, tx, initial_w, max_iters, gamma, "REGULARIZED_LOGISTIC_REGRESSION", 1, lambda_)
