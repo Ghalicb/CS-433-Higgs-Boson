@@ -10,7 +10,7 @@ loss_kinds = {
 }
 
 
-def SGD(y, tx, initial_w, max_iters, gamma, loss_kind, batch_size, lambda_=None):
+def SGD(y, tx, initial_w, max_iters, gamma, loss_kind, batch_size, lambda_ = 0):
   """Linear regression using Stochastic Gradient Descent
 
   Parameters
@@ -27,7 +27,7 @@ def SGD(y, tx, initial_w, max_iters, gamma, loss_kind, batch_size, lambda_=None)
     learning rate
   loss_kind : string
     can take value in { "LEAST_SQUARE" , "LOGISTIC_REGRESSION" }
-  batch_size : int 
+  batch_size : int
     size of a minibatch
   
   Returns
@@ -52,7 +52,7 @@ def SGD(y, tx, initial_w, max_iters, gamma, loss_kind, batch_size, lambda_=None)
       
     x_n = tx[indexes[start_id:end_id]]
     y_n = y[indexes[start_id:end_id]]
-    if lambda_ :
+    if lambda_ != 0:
       sg = gradient_function(y_n, x_n, w, lambda_)
     else:
       sg = gradient_function(y_n, x_n, w)

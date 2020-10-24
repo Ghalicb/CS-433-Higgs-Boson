@@ -28,7 +28,7 @@ def build_k_indices(y, K, seed):
   return res
 
 
-def cross_validation_SGD(y, tx, K, initial_w, max_iters, gamma, batch_size, loss_kind, seed, lambda_=None):
+def cross_validation_SGD(y, tx, K, initial_w, max_iters, gamma, batch_size, loss_kind, seed, lambda_ = 0):
   """K-fold cross validation for stochastic gradient descent.
 
   Parameters
@@ -52,7 +52,7 @@ def cross_validation_SGD(y, tx, K, initial_w, max_iters, gamma, batch_size, loss
   seed : int
     Seed for index shuffling
   lambda_ : float, optional
-    Regularization constant, default None
+    Regularization constant, default 0
   
   Returns
   -------
@@ -79,7 +79,7 @@ def cross_validation_SGD(y, tx, K, initial_w, max_iters, gamma, batch_size, loss
     # Test
     algo_loss = loss_kinds[loss_kind][0]
 
-    if lambda_:
+    if lambda_ != 0:
       loss_te = algo_loss(y_test, tx_test, w, lambda_)
     else:
       loss_te = algo_loss(y_test, tx_test, w)
@@ -95,7 +95,7 @@ def cross_validation_SGD(y, tx, K, initial_w, max_iters, gamma, batch_size, loss
   return w_best, training_errors, validation_errors
 
 
-def cross_validation_ridge(y, tx, K, seed, lambda_=0):
+def cross_validation_ridge(y, tx, K, seed, lambda_ = 0):
   """K-fold cross validation for stochastic gradient descent.
 
   Parameters
@@ -111,7 +111,7 @@ def cross_validation_ridge(y, tx, K, seed, lambda_=0):
   seed : int
     Seed for index shuffling
   lambda_ : float, optional
-    Regularization constant, default None
+    Regularization constant, default 0
   
   Returns
   -------
