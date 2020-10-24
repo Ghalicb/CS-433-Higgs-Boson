@@ -25,31 +25,44 @@ def prepare_dimensions(y, tx):
 
 
 def build_poly(x, degree):
-    """polynomial basis functions for input data x, for j=0 up to j=degree."""
-    # ***************************************************
-    # polynomial basis function
-    # this function should return the matrix formed
-    # by applying the polynomial basis to the input data
-    # ***************************************************
-    n, d = x.shape
-    accu_expanded = np.c_[np.ones((n,1)),x]
+  """polynomial basis functions for input data x, for 0 up to degree degrees and 
+  all 2nd degree interactions of first degree features.
 
-    for deg in range(degree):
-        accu_expanded = np.c_[accu_expanded, x**(deg+1)]
-        
-    feature_pairs = []
-    for i in range(d):
-        for j in range(i+1,d):
-            feature_pairs.append([i,j])
+  Parameters
+  ----------
+  x : numpy array
+    Feature matrix (N,D)
+  degree : int
+    max degree of polynomial expansion
     
-    pair_columns = np.zeros((n, len(feature_pairs)))
+  Returns
+  -------
+  accu_expanded : numpy array
+      matrix (N, 1+D*degree+(D choose 2)) formed by applying the polynomial basis to the input data
+  
+  Example
+  -------
+  input = x,y,z degree=3
+  output = 1,x,y,z,x^2,y^2,z^2,x^3,y^3,z^3,xy,xz,yz 
+  """
+  n, d = x.shape
+  accu_expanded = np.ones((n,1))
 
-    for i, pair in enumerate(feature_pairs):
-        pair_columns[:, i] = x[:, pair[0]] * x[:, pair[1]]
+  for deg in range(degree):
+    accu_expanded = np.c_[accu_expanded, x**(deg+1)]
+  feature_pairs = []
+  for i in range(d):
+    for j in range(i+1,d):
+      feature_pairs.append([i,j])
 
-    accu_expanded =  np.c_[accu_expanded, pair_columns]
+  pair_columns = np.zeros((n, len(feature_pairs)))
 
-    return accu_expanded
+  for i, pair in enumerate(feature_pairs):
+    pair_columns[:, i] = x[:, pair[0]] * x[:, pair[1]]
+
+  accu_expanded =  np.c_[accu_expanded, pair_columns]
+
+  return accu_expanded
 
 
 def load_csv_data(data_path, sub_sample=False):
