@@ -39,7 +39,7 @@ def compute_mse_gradient(y, tx, w):
   """ 
   B = len(y)
   e = y - tx @ w
-  sg = -1./B * tx.T @ (y - tx @ w)
+  sg = -1./B * tx.T @ (e)
   return sg
 
 def sigmoid(t):
@@ -56,13 +56,15 @@ def sigmoid(t):
   Warning: this method can return values of 0. and 1.
   """
   #numerically stable version without useless overflow warnings
+  #uses 1/(1+e^-t) for positive values and 
+  #uses e^t/(e^t+1) for negative values
   
   pos_mask = (t >= 0)
   neg_mask = (t < 0)
-  z = np.zeros_like(t)
+  z = np.zeros_like(t, dtype=np.float64)
   z[pos_mask] = np.exp(-t[pos_mask])
   z[neg_mask] = np.exp(t[neg_mask])
-  top = np.ones_like(t)
+  top = np.ones_like(t, dtype=np.float64)
   top[neg_mask] = z[neg_mask]
   return top / (1 + z)
 
