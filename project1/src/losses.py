@@ -98,7 +98,7 @@ def compute_regularized_logistic_loss(y, tx, w, lambda_):
   one_minus_pred = 1 - pred
   one_minus_pred[one_minus_pred < min_value] = min_value
   
-  reg_term = lambda_ * np.sum(w ** 2)
+  reg_term = lambda_/2 * np.sum(w ** 2)
   loss = -(y.T @ np.log(pred) + (1 - y).T @ np.log(one_minus_pred)) + reg_term
   return loss.item() 
 
@@ -142,7 +142,7 @@ def compute_regularized_logistic_gradient(y, tx, w, lambda_):
   gradient : numpy array 
     Gradient of logistic loss (D,1)
   """  
-  reg_term = 2 * lambda_ * np.sum(w)
+  reg_term = lambda_ * w
   return tx.T @ (sigmoid(tx @ w) - y) + reg_term
 
 
