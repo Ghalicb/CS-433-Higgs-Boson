@@ -4,7 +4,7 @@ import csv
 import numpy as np
 
 
-def standardize(x):
+def standardize(x, notFirst=True):
   """Normalize x, column-by-column
 
   Parameters
@@ -20,10 +20,16 @@ def standardize(x):
   mean_x : mean of each column of x
   std_x : standard_deviation of x
   """
-  mean_x = np.mean(x, axis=0)
-  x = x - mean_x
-  std_x = np.std(x, axis=0)
-  x = x / std_x
+  if notFirst:
+    mean_x = np.mean(x[:,1:], axis=0)
+    x[:,1:] = x[:,1:] - mean_x
+    std_x = np.std(x[:,1:], axis=0)
+    x[:,1:] = x[:,1:] / std_x
+  else:
+    mean_x = np.mean(x, axis=0)
+    x = x - mean_x
+    std_x = np.std(x, axis=0)
+    x = x / std_x
   return x, mean_x, std_x
 
 
@@ -47,7 +53,7 @@ def prepare_dimensions(y, tx):
   return y_reshaped, tx_reshaped
 
 
-def build_poly(x, degree):
+def build_poly(x, degree, interactions=False):
   """polynomial basis functions for input data x, for 0 up to degree degrees and 
   all 2nd degree interactions of first degree features.
 
@@ -70,20 +76,21 @@ def build_poly(x, degree):
   """
   n, d = x.shape
   accu_expanded = np.ones((n,1))
-
   for deg in range(degree):
     accu_expanded = np.c_[accu_expanded, x**(deg+1)]
-  feature_pairs = []
-  for i in range(d):
-    for j in range(i+1,d):
-      feature_pairs.append([i,j])
+ 
+  
+  if interactions:
+    feature_pairs = []
+    for i in range(d):
+      for j in range(i+1,d):
+        feature_pairs.append([i,j])
+    pair_columns = np.zeros((n, len(feature_pairs)))
 
-  pair_columns = np.zeros((n, len(feature_pairs)))
+    for i, pair in enumerate(feature_pairs):
+      pair_columns[:, i] = x[:, pair[0]] * x[:, pair[1]]
 
-  for i, pair in enumerate(feature_pairs):
-    pair_columns[:, i] = x[:, pair[0]] * x[:, pair[1]]
-
-  accu_expanded =  np.c_[accu_expanded, pair_columns]
+    accu_expanded =  np.c_[accu_expanded, pair_columns]
 
   return accu_expanded
 

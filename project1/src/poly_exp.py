@@ -59,7 +59,7 @@ train_dict = {
 
 
 
-def lambda_gamma_degree_sgd_cv(data_set, algorithm, lambdas, gammas, degree, K, max_iters, batch_size):
+def lambda_gamma_degree_sgd_cv(y, tx, algorithm, lambdas, gammas, degree, K, max_iters, batch_size):
   """Do K-fold cross-validation for each value in lambdas and gammas and each degree of polynomial expansion, at every iteration.
   
   Inputs:
@@ -98,50 +98,41 @@ def lambda_gamma_degree_sgd_cv(data_set, algorithm, lambdas, gammas, degree, K, 
     Validation loss for each fold, for each degree, for each lambda and gamma
   """
   # print(tX_dict[data_set])
-  y, tx = prepare_dimensions(*train_dict[data_set])
-
-  tx_poly = build_poly(tx, degree)
-  tx_poly, *_ = standardize(tx_poly)
+  y, tx = prepare_dimensions(y, tx)
+  
 
   N = len(y)
-  # len_degrees = len(degrees)
+  len_degrees = len(degrees)
   len_lambdas = len(lambdas)
   len_gammas = len(gammas)
 
-  initial_w = np.ones((tx_poly.shape[1], 1))
-  w_best = np.zeros((tx_poly.shape[1], len_lambdas, len_gammas))
-
-  training_errors = np.zeros((K, len_lambdas, len_gammas))
-  validation_errors = np.zeros((K, len_lambdas, len_gammas))
-  min_error = np.inf * np.ones((len_lambdas, len_gammas))
+  training_errors = np.zeros((K, len_degrees, len_lambdas, len_gammas))
+  validation_errors = np.zeros((K, len_degrees, len_lambdas, len_gammas))
 
   k_indices = build_k_indices(y, K, seed)
 
-  # for d, degree in enumerate(degrees):
-  # print("Degree = {}".format(degree))
+  for d, degree in enumerate(degrees):
+    print("Degree = {}".format(degree))
+    tx_poly = build_poly(tx, degree)
+    tx_poly, *_ = standardize(tx_poly)
+    initial_w = np.ones((tx_poly.shape[1], 1))
+    for k in range(K):
+      print("Fold = {}".format(k+1))
+      # Take all but the k-th row of tx and y
+      tx_train, y_train = map(lambda a: a[np.delete(k_indices, k).flatten()], (tx_poly, y))
+      # Take the k-th row of tx and y
+      tx_test, y_test = map(lambda a: a[k_indices[k]], (tx_poly, y))
 
-  for k in range(K):
-    print("Fold = {}".format(k+1))
-    # Take all but the k-th row of tx and y
-    tx_train, y_train = map(lambda a: a[np.delete(k_indices, k).flatten()], (tx_poly, y))
-    # Take the k-th row of tx and y
-    tx_test, y_test = map(lambda a: a[k_indices[k]], (tx_poly, y))
+      for i, lambda_ in enumerate(lambdas):
+        for j, gamma in enumerate(gammas):
+          # Train
+          w, loss_tr = SGD(y_train, tx_train, initial_w, max_iters, gamma, algorithm, batch_size, lambda_)
+          print(loss_tr)
+          # Test
+          loss_te = compute_mse_loss(y_test, tx_test, w)
 
-    for i, lambda_ in enumerate(lambdas):
-      for j, gamma in enumerate(gammas):
-        # Train
-        w, loss_tr = SGD(y_train, tx_train, initial_w, max_iters, gamma, algorithm, batch_size, lambda_)
-        print(loss_tr)
-        # Test
-        loss_te = compute_mse_loss(y_test, tx_test, w)
-        
-        training_errors[k, i, j] = loss_tr
-        validation_errors[k, i, j] = loss_te
-
-        # Keep the weights that give the lowest loss_te
-        if loss_te < min_error[i, j]:
-          min_error[i, j] = loss_te
-          w_best[:, i, j] = w.ravel()
+          training_errors[k, d, i, j] = loss_tr
+          validation_errors[k, d, i, j] = loss_te
 
   return w_best, training_errors, validation_errors
 
