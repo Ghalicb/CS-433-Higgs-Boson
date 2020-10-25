@@ -58,14 +58,20 @@ def cross_validation_SGD(y, tx, K, initial_w, max_iters, gamma, batch_size, loss
   -------
   w_best : numpy array
     Weight vector (D,1) with smallest validation error
-  training_errors : list
-    Training error for each fold (K elements)
-  validation_errors : list
-    Validation error for each fold (K elements)
+  final_training_errors : list
+    Training error after training for each fold (K elements)
+  final_validation_errors : list
+    Validation error after training for each fold (K elements)
+  training_errors_during_training : list of list
+    Training errors during training for each fold (K lists of max_iters elements)
+  validation_errors_during_training : list of list
+    Validation errors during training for each fold (K lists of max_iters elements)
   """
   k_indices = build_k_indices(y, K, seed)
-  training_errors = []
-  validation_errors = []
+  final_training_errors = []
+  final_validation_errors = []
+  training_errors_during_training = []
+  validation_errors_during_training = []
   min_error = np.inf
 
   for k in range(K):
@@ -75,7 +81,11 @@ def cross_validation_SGD(y, tx, K, initial_w, max_iters, gamma, batch_size, loss
     tx_test, y_test = map(lambda a: a[k_indices[k]], (tx, y))
 
     # Train
-    w, loss_tr = SGD(y_train, tx_train, initial_w, max_iters, gamma, loss_kind, batch_size, lambda_)
+    (w, loss, train_errors, validation_errors) = SGD(y_train, tx_train, initial_w, max_iters,
+                                                   gamma, loss_kind, batch_size, lambda_,
+                                                   verbose=True, validation_y = y_test, validation_tx=tx_test)
+    training_errors_during_training.append(train_errors)
+    validation_errors_during_training.append(validation_errors)
     # Test
     algo_loss = loss_kinds[loss_kind][0]
 
@@ -84,15 +94,15 @@ def cross_validation_SGD(y, tx, K, initial_w, max_iters, gamma, batch_size, loss
     else:
       loss_te = algo_loss(y_test, tx_test, w)
 
-    training_errors.append(loss_tr)
-    validation_errors.append(loss_te)
+    final_training_errors.append(loss_tr)
+    final_validation_errors.append(loss_te)
 
     # Keep the weights that give the lowest loss_te
     if loss_te < min_error:
       min_error = loss_te
       w_best = w
 
-  return w_best, training_errors, validation_errors
+  return w_best, final_training_errors, final_validation_errors, training_errors_during_training, validation_errors_during_training
 
 
 def cross_validation_ridge(y, tx, K, seed, lambda_ = 0):

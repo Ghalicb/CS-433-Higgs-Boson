@@ -10,7 +10,7 @@ loss_kinds = {
 }
 
 
-def SGD(y, tx, initial_w, max_iters, gamma, loss_kind, batch_size, lambda_ = 0):
+def SGD(y, tx, initial_w, max_iters, gamma, loss_kind, batch_size, lambda_ = 0, verbose=False, validation_y = None, validation_tx=None):
   """Linear regression using Stochastic Gradient Descent
 
   Parameters
@@ -31,6 +31,13 @@ def SGD(y, tx, initial_w, max_iters, gamma, loss_kind, batch_size, lambda_ = 0):
     size of a minibatch
   lamda_ : float, optional
     regularization parameter to use if loss_kind = "REGULARIZED_LOGISTIC_REGRESSION". The default is 0
+  verbose : bool, optional 
+    whether to return lists of train errors and validation errors. The default is False
+  validation_y : numpy array, optional
+    validation target vecor (N*, 1). The default is None, specify if verbose is True.
+  validation_tx : numpy vector, optional
+    validation feature matrix (N*, D). The default is None. Specify if verbose is True.
+  
   
   Returns
   -------
@@ -46,7 +53,8 @@ def SGD(y, tx, initial_w, max_iters, gamma, loss_kind, batch_size, lambda_ = 0):
   n_iter = 0
   start_id = 0
   end_id = batch_size
-  
+  train_errors = []
+  validation_errors = []
   while n_iter < max_iters:
     # Reshuffle indexes at the beginning of epoch if minibatches is not whole dataset
     if start_id == 0 and batch_size != N:
@@ -59,6 +67,16 @@ def SGD(y, tx, initial_w, max_iters, gamma, loss_kind, batch_size, lambda_ = 0):
     else:
       sg = gradient_function(y_n, x_n, w)
     w = w - gamma * sg
+    
+    if verbose:
+      if lambda_:
+        train_loss = loss_function(y, tx, w, lambda_)
+        validation_loss = loss_function(validation_y, validation_tx, w, lambda_)
+      else:
+        train_loss = loss_function(y, tx, w)
+        validation_loss = loss_function(validation_y, validation_tx, w)
+      train_errors.append(train_loss)
+      validation_errors.append(validation_loss)
     
     n_iter += 1
     start_id = start_id + batch_size
@@ -73,6 +91,8 @@ def SGD(y, tx, initial_w, max_iters, gamma, loss_kind, batch_size, lambda_ = 0):
     loss = loss_function(y, tx, w, lambda_)
   else:
     loss = loss_function(y, tx, w)
+  if verbose:
+    return (w, loss, train_errors, validation_errors)
   return (w, loss)
 
 
@@ -168,9 +188,7 @@ def ridge_regression(y, tx, lambda_):
     tx.T @ y,
     rcond=None
   )
-  loss = compute_mse_loss(y, tx, w)
-  reg_term = lambda_ * np.sum(w ** 2)
-  loss += reg_term
+  loss = compute_mse_loss_regularized(y, tx, w, lambda_)
   return (w, loss)
 
 

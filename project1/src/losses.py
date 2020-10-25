@@ -16,8 +16,31 @@ def compute_mse_loss(y, tx, w):
   -------
   loss : float
   """  
+  return compute_mse_loss_regularized(y, tx, w, 0)
+
+def compute_mse_loss_regularized(y, tx, w, lambda_):
+  """Mean Square Error loss
+
+  Parameters
+  ----------
+  y : numpy array
+    Targets vector (N,1)
+  tx : numpy array
+    Feature matrix (N,D)
+  w : numpy array
+    weights vector (D,1)
+  lambda_ : float
+    regularization parameter
+  
+  Returns
+  -------
+  loss : float
+  """  
   e = y - tx @ w
-  return (1./(2*len(y)) * e.T @ e).item() 
+  loss = (1./(2*len(y)) * e.T @ e)
+  reg_term = lambda_ * np.sum(w ** 2)
+  loss += reg_term
+  return loss.item() 
 
 
 def compute_mse_gradient(y, tx, w):
@@ -41,7 +64,6 @@ def compute_mse_gradient(y, tx, w):
   e = y - tx @ w
   sg = -1./B * tx.T @ (e)
   return sg
-
 
 def sigmoid(t):
   """apply the sigmoid function on t.
