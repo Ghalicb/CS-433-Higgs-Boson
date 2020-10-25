@@ -59,7 +59,7 @@ train_dict = {
 
 
 
-def lambda_gamma_degree_sgd_cv(y, tx, algorithm, lambdas, gammas, degree, K, max_iters, batch_size):
+def lambda_gamma_degree_sgd_cv(data_set, algorithm, lambdas, gammas, degree, K, max_iters, batch_size):
   """Do K-fold cross-validation for each value in lambdas and gammas and each degree of polynomial expansion, at every iteration.
   
   Inputs:
@@ -98,8 +98,11 @@ def lambda_gamma_degree_sgd_cv(y, tx, algorithm, lambdas, gammas, degree, K, max
     Validation loss for each fold, for each degree, for each lambda and gamma
   """
   # print(tX_dict[data_set])
-  y, tx = prepare_dimensions(y, tx)
-  
+  y, tx = prepare_dimensions(*train_dict[data_set])
+
+  tx_poly = build_poly(tx, degree)
+  # print(np.any(np.isnan(tx_poly)))
+  tx_poly = np.column_stack((tx_poly[:, 0], standardize(tx_poly[:, 1:])[0]))
 
   N = len(y)
   len_degrees = len(degrees)
