@@ -202,10 +202,11 @@
 
 One important step was deciding how many iterations to perform in our
 SGD. We evaluated this by plotting the training and validation errors
-at each epoch for given algorithms and hyperparameters. The result can
+at each epoch for given algorithms and hyperparameters.
+We chose an arbitrary value for the regularisation parameter $\lambda$ and carried out SGD with regularised logistic regression with two learning rates $\gamma$.
+In both cases, the errors seemed to have converged after 1000 iterations, so we kept this value in our subsequent tests.
+The result can
 be seen in \autoref{fig:test}.
-
-
 
 \section{Results}
 

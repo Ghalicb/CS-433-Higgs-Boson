@@ -32,6 +32,24 @@
   \addplot table [x=epoch, y=tr_loss] {figures/converg_reg_log_seed666.txt};
   \addplot table [x=epoch, y=val_loss] {figures/converg_reg_log_seed666.txt};
 \end{semilogxaxis}
+%
+\hskip 10pt
+%
+\begin{semilogxaxis}[
+  title=Convergence Plot,
+  xlabel={Epoch},
+  ylabel={$L_2$ Error},
+  grid=major,
+  legend entries={Training,Validation},
+  no markers,
+  % log basis y=10,
+  % restrict y to domain=0:10e+07,
+  % log basis x=10,
+  % domain=0:1,
+]
+  \addplot table [x=epoch, y=tr_loss] {figures/conv_reg_logist_seed666_lambda01_gamma01.txt};
+  \addplot table [x=epoch, y=val_loss] {figures/conv_reg_logist_seed666_lambda01_gamma01.txt};
+\end{semilogxaxis}
 \end{tikzpicture}
 %\end{document}
 
