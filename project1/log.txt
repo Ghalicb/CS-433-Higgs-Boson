@@ -22,3 +22,7 @@ Parameter to tune:
 data cleaning [drop columns / keep columns with mean] split in 4 
 algo
 parameters algo + 
+
+
+Ran SGD with regularised logistic regression with gamma = 0.01, lambda = 0.1 and 1000 iterations to see when the error stops decreasing. Result in converg_reg_log_seed666.txt.
+1000 is a good number but i'd like to go further to see if it starts increasing again.

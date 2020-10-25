@@ -10,7 +10,7 @@ loss_kinds = {
 }
 
 
-def SGD(y, tx, initial_w, max_iters, gamma, loss_kind, batch_size, lambda_ = 0, verbose=False, validation_y = None, validation_tx=None):
+def SGD(y, tx, initial_w, max_iters, gamma, loss_kind, batch_size, lambda_ = 0, verbose = False, validation_y = None, validation_tx = None):
   """Linear regression using Stochastic Gradient Descent
 
   Parameters
@@ -20,26 +20,25 @@ def SGD(y, tx, initial_w, max_iters, gamma, loss_kind, batch_size, lambda_ = 0, 
   tx : numpy array
     Feature matrix (N,D)
   initial_w : numpy array
-    weights vector (D,) or (D,1)
+    Weights vector (D,) or (D,1)
   max_iters : int
-    number of iteration to run SGD
+    Number of iteration to run SGD
   gamma : float
-    learning rate
+    Learning rate
   loss_kind : string
-    can take value in { "LEAST_SQUARE" , "LOGISTIC_REGRESSION", "REGULARIZED_LOGISTIC_REGRESSION"}
+    Can take value in { "LEAST_SQUARE" , "LOGISTIC_REGRESSION", "REGULARIZED_LOGISTIC_REGRESSION"}
   batch_size : int
-    size of a minibatch
-  lamda_ : float, optional
-    regularization parameter to use if loss_kind = "REGULARIZED_LOGISTIC_REGRESSION". The default is 0
+    Size of a minibatch
+  lambda_ : float, optional
+    Regularization parameter to use if loss_kind = "REGULARIZED_LOGISTIC_REGRESSION". The default is 0
   verbose : bool, optional 
-    whether to return lists of train errors and validation errors. The default is False
+    Whether to return lists of train errors and validation errors. The default is False
   validation_y : numpy array, optional
-    validation target vecor (N*, 1). The default is None, specify if verbose is True.
+    Validation target vecor (N*, 1). The default is None. Specify if verbose is True.
   validation_tx : numpy vector, optional
-    validation feature matrix (N*, D). The default is None. Specify if verbose is True.
-  
-  
-  Returns
+    Validation feature matrix (N*, D). The default is None. Specify if verbose is True.
+
+   Returns
   -------
   (w, loss) : (numpy array, float)
       weights (D,1) and loss after max_iters iterations of SGD

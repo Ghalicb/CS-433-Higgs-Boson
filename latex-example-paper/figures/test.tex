@@ -26,7 +26,8 @@
   % log basis x=10,
   % domain=0:1,
 ]
-  \addplot table {figures/RRseed1.txt};
+  \addplot table [x=epoch, y=tr_loss] {figures/converg_reg_log_seed666.txt};
+  \addplot table [x=epoch, y=val_loss] {figures/converg_reg_log_seed666.txt};
 \end{semilogxaxis}
 \end{tikzpicture}
 %\end{document}
