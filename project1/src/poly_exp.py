@@ -101,7 +101,8 @@ def lambda_gamma_degree_sgd_cv(data_set, algorithm, lambdas, gammas, degree, K, 
   y, tx = prepare_dimensions(*train_dict[data_set])
 
   tx_poly = build_poly(tx, degree)
-  tx_poly, *_ = standardize(tx_poly)
+  # print(np.any(np.isnan(tx_poly)))
+  tx_poly = np.column_stack((tx_poly[:, 0], standardize(tx_poly[:, 1:])[0]))
 
   N = len(y)
   # len_degrees = len(degrees)
