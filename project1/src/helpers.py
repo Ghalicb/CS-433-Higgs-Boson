@@ -4,6 +4,29 @@ import csv
 import numpy as np
 
 
+def standardize(x):
+  """Normalize x, column-by-column
+
+  Parameters
+  ----------
+  tx : numpy array
+    (N,D)
+  
+  Returns
+  -------
+  x : numpy array
+    two dimensional numpy arrays with correct dimensions
+    (N,D)
+  mean_x : mean of each column of x
+  std_x : standard_deviation of x
+  """
+  mean_x = np.mean(x, axis=0)
+  x = x - mean_x
+  std_x = np.std(x, axis=0)
+  x = x / std_x
+  return x, mean_x, std_x
+
+
 def prepare_dimensions(y, tx):
   """Reshape input data to two dimensions, if the dimensions are already correct, they stay the same
 

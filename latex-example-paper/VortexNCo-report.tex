@@ -141,16 +141,6 @@
 %   \label{fig:denoise-wavelet}
 % \end{figure}
 
-\begin{figure}[htbp]
-  \centering
-  \resizebox{\columnwidth}{!}{%
-      \input{figures/convergence.tex}
-  }
-  \vspace{-3mm}
-  \caption{A test}
-  \label{fig:test}
-\end{figure}
-
 % Use examples and illustrations to clarify ideas and results. For
 % example, by comparing Figure~\ref{fig:denoise-fourier} and
 % Figure~\ref{fig:denoise-wavelet}, we can see the two different
@@ -199,6 +189,23 @@
 %   calculations were performed. Do not reproduce the full source code in
 %   the paper, but explain the key steps.
 % \end{enumerate}
+
+% \begin{minipage}{\textwidth}
+
+Cleaning the data was important as many columns were missing a significant amount of data (up to 70 \% for 7 of the 29 features).
+
+\begin{figure}
+  \centering
+  % \resizebox{\columnwidth}{4cm}{%
+  \input{figures/convergence.tex}
+  % }
+  \vspace{-3mm}
+  \caption{Convergence of regularized logistic regression for $\lambda = 0.1$ and two
+  different values of $\gamma$.}
+  \label{fig:test}
+\end{figure}
+% \end{minipage}
+
 
 One important step was deciding how many iterations to perform in our
 SGD. We evaluated this by plotting the training and validation errors
