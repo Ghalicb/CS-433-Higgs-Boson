@@ -192,7 +192,7 @@
 
 % \begin{minipage}{\textwidth}
 
-Cleaning the data was important as many columns were missing a significant amount of data (up to 70\% for 7 of the 29 features).
+Cleaning the data was important as many columns were missing a significant amount of data (up to 70 \% for 7 of the 29 features).
 
 \begin{figure}
   \centering
@@ -215,6 +215,23 @@ In both cases, the errors seemed to have converged after 1000 iterations, so we 
 The result can
 be seen in \autoref{fig:test}.
 
+This proved to be a difficult decision since setting a lower learning rate can lead to better results,
+if the number of iterations is high enough.
+
+However, increasing the number of iterations can be
+time-consuming, especially when there are other
+factors to compare such as the cleaning method, the learning algorithm or 
+the regularisation parameter.
+
+
+With polynomials of higher degrees, interactions terms become very numerous hence we decided to remove them
+to prevent overfitting.
+
+
+We started by randomly partitioning the data into a training and test set,
+putting 80\% of the data (or 200000 points) in the former.
+
+The process then consisted in performing a three-dimensional grid-search, on a selection of $\lambda$, $\gamma$ and polynomial maximum degree.
 \section{Results}
 
 \section{Discussion}

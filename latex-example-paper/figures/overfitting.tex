@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+\begin{axis}[
+  xlabel={Maximum Degree},
+  ylabel={Mean Squared Error},
+  grid=major,
+  legend entries={Training,Validation},
+  mark size=1pt,
+  mark=*,
+]
+  \addplot [red] table [x=epoch, y=tr_loss] {figures/ls_degrees.txt};
+  \addplot [blue] table [x=epoch, y=val_loss] {figures/ls_degrees.txt};
+\end{axis}
+\end{tikzpicture}

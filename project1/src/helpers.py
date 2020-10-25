@@ -54,7 +54,7 @@ def prepare_dimensions(y, tx):
 
 
 def build_poly(x, degree, interactions=False):
-  """polynomial basis functions for input data x, for 0 up to degree degrees and 
+  """Polynomial basis functions for input data x, for 0 up to degree degrees and 
   all 2nd degree interactions of first degree features.
 
   Parameters
