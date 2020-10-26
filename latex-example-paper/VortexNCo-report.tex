@@ -18,7 +18,7 @@
 
 
 \begin{document}
-\title{{\large Finding the Higgs Boson}}
+\title{{\LARGE Finding the Higgs Boson}\vspace{-3mm}}    
 
 \author{
   APOSTOLOV Alexander (alexander.apostolov@epfl.ch)\\
@@ -43,7 +43,8 @@
 
 \section{Introduction}
 
-The Higgs Boson in an elementary particle discovered in 2013 explaining why other particles have mass. This particle is not directly observable through experimentation, but one can still measure its «decay signature» (i.e. the products that result from its decay process). Although, it is hard to distinguish between the decay signature of a Higgs Boson and those of other particules.\\
+The Higgs Boson in an elementary particle discovered in 2013 explaining why other particles have mass. This particle is not directly observable through experimentation, but one can still measure its ``decay signature'' (i.e. the products that result from its decay process). Although, it is hard to distinguish between the decay signature of a Higgs Boson and those of other particules.
+
 Therefore, our goal here is to use binary classification techniques to predict whether a given event’s signature is the result of a Higgs boson or not.
 
 
@@ -67,27 +68,46 @@ The given labels take values in \{-1, 1\}. However, it is more convenient to hav
 \subsubsection{Dealing with invalid values}
 The raw dataset contains many invalid value encoded as -999.0. We observed that all these invalid values were concentrated on specific features (more precisely 11 features out of 30). We considered two ways of dealing with these values :
 \begin{itemize}
-    \item Drop the features containing invalid values (as they represent up to 70% of the feature).
-    \item Replace the invalid values by the mean of each feature.
+    \item Drop the features containing invalid values (as they represent up to 70\% of the feature).
+    \item Replace the invalid values by the mean of the corresponding feature.
 \end{itemize}
 
 \subsubsection{Feature expansion}
-
+To capture a more complex model, we use polynomial expansion (without interaction between features).
 
 \subsubsection{Normalization}
-
+Finally we normalized the data so that each feature has the same scale in order to achieve better convergence.
 
 \subsection{First Model}
+For our first model, we took the dataset without the columns containing invalid values and trained it using all the different algorithms mentioned above. \\
+%%% Table 1 here %%%
+\begin{table}[h!]
+  % \centering
+  % \textrm
+  \begin{tabular}{ |c|c|c|c|c|c| } 
+    \hline
+     & LS & Ridge & LS SGD & Logistic & Reg. Logistic \\
+    \hline
+    \texttt{NaN} replaced & 0.0690 & 0.0710 & 0.0969 & 1.8184 & 0.6332 \\
+    \texttt{NaN} removed  & 0.0759 & 0.0785 & 0.0926 & 1.1623 & 0.5384 \\
+    \hline
+  \end{tabular}
+
+  % \vspace{-3mm}
+  \caption{Best average validation error (MSE) over 4 folds, for different data models and learning algorithms.}
+  \label{tbl:validation}
+\end{table}
 
 \subsection{Second Model}
+For the second model, we took the dataset where we replaced the invalid values by the mean of their corresponding feature and trained it using all the different algorithms mentioned above.
 
 \subsection{Third Model}
+For the last model,
 
 \subsection{Cross-validation}
+We used 4-Fold cross validation with grid search to select the hyperparameters (degree of polynomial expansion, $\gamma$ and $\lambda$) for each algorithm we considered. Cross-validation was run on the train set (80\% of the data) as we used the remaining 20\% for comparing the algorithms once optimally tuned.
 
-\\ \\ \\
-
-Cleaning the data was important as many columns were missing a significant amount of data (up to 70 \% for 7 of the 29 features).
+We d
 
 \begin{figure}
   \centering
@@ -105,7 +125,7 @@ One important step was deciding how many iterations to perform in our
 SGD. We evaluated this by plotting the training and validation errors
 at each epoch for given algorithms and hyperparameters.
 We chose an arbitrary value for the regularisation parameter $\lambda$ and carried out SGD with regularised logistic regression with two learning rates $\gamma$.
-In both cases, the errors seemed to have converged after 1000 iterations, so we kept this value in our subsequent tests.
+In both cases, the errors seemed to have converged after 1000 iterations, so we used a value of 10000 in our subsequent tests.
 The result can
 be seen in \autoref{fig:test}.
 
@@ -138,7 +158,7 @@ The process then consisted in performing a three-dimensional grid-search, on a s
   \label{fig:overfitting}
 \end{figure}
 
-Left out least squares gradient descent because the number of iterations was too large compared to the time it took to achieve a run.
+We left out least squares gradient descent because the number of iterations was too large compared to the time it took to achieve convergence and we saw that for similar hyperparameters the final accuracy is similar between GD and SGD.
 
 
 
@@ -205,6 +225,8 @@ Note that we use a different model depending on the category the data
 point belongs in with respect to the \textsf{PRI\_jet\_num} variable.
 
 The parameters used for each category are shown in \autoref{tbl:parameters-ridge-partitioned}.
+
+The best predictions on AICrowd has id 92621 and reached an accuracy of 0.794.
 % The value of $\lambda$ chosen corresponds to that found with grid-search,
 % the results of which are visualised in %\autoref{fig:rr-grid-search}.
 
