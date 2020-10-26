@@ -261,22 +261,21 @@ def main(submission_name, seeCrossValidationExample = False):
   seed = 1
   train_percentage = 0.8
 
-  #Take 20% out for testing
+  # Take 20% out for testing
   y_train, tX_train, ids_train, y_test, tX_test, ids_test = partition(y, tX, ids, train_percentage, seed)
   
-  #Preparing train set.
-  #First change y vector from {-1, 1} to {0,1}
+  # Preparing train set.
+  # First change y vector from {-1, 1} to {0,1}
   y_train_0 =y_train.copy()
   y_train_0[y_train_0 == -1] = 0
 
-  #Drop columns with nans
+  # Drop columns with nans
   tX_train_drop_invalid = tX_train.copy()
   tX_train_drop_invalid = tX_train_drop_invalid[:, ~np.any(tX_train_drop_invalid == -999., axis=0)]
 
   ##############################################################################
-
   
-  #Separate into 4 train datasets according to categorical feature
+  # Separate into 4 train datasets according to categorical feature
   tX_0, tX_1, tX_2, tX_3, y_0, y_1, y_2, y_3, ids_0, ids_1, ids_2, ids_3 =\
       separate_data(tX_train_drop_invalid, y_train_0, ids_train)
   
@@ -307,5 +306,6 @@ def main(submission_name, seeCrossValidationExample = False):
   ai_predictions = predict_4sets(list_tX_test_ai, list_ids_test_ai, best_weights)
   create_csv_submission(ai_predictions[:,0], ai_predictions[:,1], submission_name)
 
-main("best_submission")
-  
+
+if __name__ == '__main__':
+  main("best_submission")
