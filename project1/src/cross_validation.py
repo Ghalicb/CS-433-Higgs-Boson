@@ -158,3 +158,135 @@ def cross_validation_ridge(y, tx, K, seed, lambda_ = 0):
       w_best = w
 
   return w_best, training_errors, validation_errors
+
+def lambda_degree_ridge_cv(y, tx, lambdas, degrees, K):
+  """Do K-fold cross-validation for each value in lambdas and gammas and each degree of polynomial expansion, at every iteration.
+  
+  Inputs:
+  ========
+  y : numpy array
+    Targets vector (N,1)
+  tx : numpy array
+    Feature matrix (N,D)
+  lambdas : iterable
+    Regularisation parameters for cost function
+  degrees : iterable
+    The polynomial degrees
+  K : int
+    Number of folds
+  
+  Outputs:
+  training_errors : np array
+    (K, len(degrees), len(lambdas))
+    Training loss for each fold, for each degree and for each lambda
+  validation_errors : np array
+    (K, len(degrees), len(lambdas))
+    Validation loss for each fold, for each degree and for each lambda
+  """
+  y, tx = prepare_dimensions(y, tx)
+  
+
+  N = len(y)
+  len_degrees = len(degrees)
+  len_lambdas = len(lambdas)
+
+  training_errors = np.zeros((K, len_degrees, len_lambdas))
+  validation_errors = np.zeros((K, len_degrees, len_lambdas))
+
+  k_indices = build_k_indices(y, K, seed)
+
+  for d, degree in enumerate(degrees):
+    print("Degree = {}".format(degree))
+    tx_poly = build_poly(tx, degree)
+    tx_poly, *_ = standardize(tx_poly)
+    initial_w = np.ones((tx_poly.shape[1], 1))
+    print(tx_poly.shape)
+    for k in range(K):
+      print("Fold = {}".format(k+1))
+      # Take all but the k-th row of tx and y
+      tx_train, y_train = map(lambda a: a[np.delete(k_indices, k).flatten()], (tx_poly, y))
+      # Take the k-th row of tx and y
+      tx_test, y_test = map(lambda a: a[k_indices[k]], (tx_poly, y))
+
+      for i, lambda_ in enumerate(lambdas):
+        # Train
+        w, loss_tr = ridge_regression(y_train, tx_train, lambda_)
+        # Test
+        loss_te = compute_mse_loss(y_test, tx_test, w)
+
+        training_errors[k, d, i] = loss_tr
+        validation_errors[k, d, i] = loss_te
+
+  return training_errors, validation_errors
+
+def lambda_gamma_degree_sgd_cv(y, tx, algorithm, lambdas, gammas, degrees, K, max_iters, batch_size):
+  """Do K-fold cross-validation for each value in lambdas and gammas and each degree of polynomial expansion, at every iteration.
+  
+  Inputs:
+  ========
+  y : numpy array
+    Targets vector (N,1)
+  tx : numpy array
+    Feature matrix (N,D)
+  algorithm : string
+    The algorithm to use for training
+    Can take any value in { "LEAST_SQUARE" , "LOGISTIC_REGRESSION", "REGULARIZED_LOGISTIC_REGRESSION"}
+  lambdas : iterable
+    Regularisation parameters for cost function
+  gammas : iterable
+    Learning rates for SGD
+  degrees : int
+    The polynomial degree
+  K : int
+    Number of folds
+  max_iters : int
+    Maxium number of iterations for SGD
+  batch_size : int
+    Size of mini-batches
+  
+  Outputs:
+  ========
+  training_errors : np array
+    (K, len(degrees), len(lambdas), len(gammas))
+    Training loss for each fold, for each degree, for each lambda and gamma
+  validation_errors : np array
+    (K, len(degrees), len(lambdas), len(gammas))
+    Validation loss for each fold, for each degree, for each lambda and gamma
+  """
+  y, tx = prepare_dimensions(y, tx)
+  
+
+  N = len(y)
+  len_degrees = len(degrees)
+  len_lambdas = len(lambdas)
+  len_gammas = len(gammas)
+
+  training_errors = np.zeros((K, len_degrees, len_lambdas, len_gammas))
+  validation_errors = np.zeros((K, len_degrees, len_lambdas, len_gammas))
+
+  k_indices = build_k_indices(y, K, seed)
+
+  for d, degree in enumerate(degrees):
+    print("Degree = {}".format(degree))
+    tx_poly = build_poly(tx, degree)
+    tx_poly, *_ = standardize(tx_poly)
+    initial_w = np.ones((tx_poly.shape[1], 1))
+    print(tx_poly.shape)
+    for k in range(K):
+      print("Fold = {}".format(k+1))
+      # Take all but the k-th row of tx and y
+      tx_train, y_train = map(lambda a: a[np.delete(k_indices, k).flatten()], (tx_poly, y))
+      # Take the k-th row of tx and y
+      tx_test, y_test = map(lambda a: a[k_indices[k]], (tx_poly, y))
+
+      for i, lambda_ in enumerate(lambdas):
+        for j, gamma in enumerate(gammas):
+          # Train
+          w, loss_tr = SGD(y_train, tx_train, initial_w, max_iters, gamma, algorithm, batch_size, lambda_)
+          # Test
+          loss_te = compute_mse_loss(y_test, tx_test, w)
+
+          training_errors[k, d, i, j] = loss_tr
+          validation_errors[k, d, i, j] = loss_te
+
+  return training_errors, validation_errors

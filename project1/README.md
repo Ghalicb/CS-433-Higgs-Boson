@@ -4,5 +4,7 @@
 In this project, we build a classification model using the data
 provided by ___ which can be found at _link_.
 
+The test.csv and train.csv files should be located in ./data
+
 
 
