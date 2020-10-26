@@ -5,12 +5,9 @@
 In this project, we build a classification model using the data
 provided by EPFL which can be found at [this link](https://www.aicrowd.com/challenges/epfl-machine-learning-higgs).
 
-<<<<<<< HEAD
 The test.csv and train.csv files should be located in ./data
 
-=======
 To see the best results we obtained, run the `run.py` script.
->>>>>>> 8a5024fe3ce63f5b2e14e25c9aeedafdc1e121d7
 
 ## What is in there?
 The `run.py` script will:

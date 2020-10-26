@@ -91,7 +91,34 @@ def standardize_test_data(x, mean, std, notFirst=True):
     x = x / std
   return x
 
+def get_accuracy(y, tx, w, threshold):
+  """Calculates accuracy on given set.
 
+  Parameters
+  ----------
+  y : numpy array
+    targets (N,1)
+  tx : numpy array
+    features (N,D)
+  w : numpy array
+    weights to use (1,D)
+  threshold : float
+    threshold to use between classes
+    
+  Returns
+  -------
+  accuracy : float
+    accuracy on the set
+  """    
+  pred = tx@w
+  pred_class = [0 if p<threshold else 1 for p in pred]
+  n = len(y)
+  correct=0
+  for i in range(n):
+      if pred_class[i] == y[i]:
+          correct+=1
+  return correct/n
+  
 def build_poly(x, degree, interactions=False):
   """Polynomial basis functions for input data x, for 0 up to degree degrees and 
   all 2nd degree interactions of first degree features.

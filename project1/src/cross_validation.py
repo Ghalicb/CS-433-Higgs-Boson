@@ -159,7 +159,7 @@ def cross_validation_ridge(y, tx, K, seed, lambda_ = 0):
 
   return w_best, training_errors, validation_errors
 
-def lambda_degree_ridge_cv(y, tx, lambdas, degrees, K):
+def lambda_degree_ridge_cv(y, tx, lambdas, degrees, K, seed):
   """Do K-fold cross-validation for each value in lambdas and gammas and each degree of polynomial expansion, at every iteration.
   
   Inputs:
@@ -174,6 +174,8 @@ def lambda_degree_ridge_cv(y, tx, lambdas, degrees, K):
     The polynomial degrees
   K : int
     Number of folds
+  seed : int
+    Seed for index shuffling
   
   Outputs:
   training_errors : np array
@@ -219,7 +221,7 @@ def lambda_degree_ridge_cv(y, tx, lambdas, degrees, K):
 
   return training_errors, validation_errors
 
-def lambda_gamma_degree_sgd_cv(y, tx, algorithm, lambdas, gammas, degrees, K, max_iters, batch_size):
+def lambda_gamma_degree_sgd_cv(y, tx, algorithm, lambdas, gammas, degrees, K, max_iters, batch_size, seed):
   """Do K-fold cross-validation for each value in lambdas and gammas and each degree of polynomial expansion, at every iteration.
   
   Inputs:
@@ -243,6 +245,8 @@ def lambda_gamma_degree_sgd_cv(y, tx, algorithm, lambdas, gammas, degrees, K, ma
     Maxium number of iterations for SGD
   batch_size : int
     Size of mini-batches
+  seed : int
+    Seed for index shuffling
   
   Outputs:
   ========
