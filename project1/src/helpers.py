@@ -3,6 +3,33 @@
 import csv
 import numpy as np
 
+def partition(y, tx, fraction = 0.8):
+  """Partition data by a given fraction.
+  
+  Parameters
+  ----------
+  y : numpy array
+    (N,1)
+  tx : numpy array
+    (N,D)
+  fraction : float, optional
+    Fraction to use in test set. The default is 0.8
+
+  Returns
+  -------
+  y_train, tx_train, y_test, tx_test : numpy arrays
+    
+  """
+  np.random.seed(seed)
+  indices = np.random.permutation(len(y))
+  cutoff = int(fraction * len(y))
+
+  y_train = y[indices[:cutoff_idx]]
+  tX_train = tX[indices[:cutoff_idx]]
+  y_test = y[indices[cutoff_idx:]]
+  tX_test = tX[indices[cutoff_idx:]]
+
+  return y_train, tx_train, y_test, tx_test
 
 def standardize(x, notFirst=True):
   """Normalize x, column-by-column
@@ -11,14 +38,18 @@ def standardize(x, notFirst=True):
   ----------
   tx : numpy array
     (N,D)
-  
+  notFirst : bool, optional
+    whether to leave the first column (usually 1's). The default is True
+    
   Returns
   -------
   x : numpy array
     two dimensional numpy arrays with correct dimensions
     (N,D)
-  mean_x : mean of each column of x
-  std_x : standard_deviation of x
+  mean_x : numpy array
+    mean of each column of x (1,D)
+  std_x : numpy array
+    standard_deviation of x (1, D)
   """
   if notFirst:
     mean_x = np.mean(x[:,1:], axis=0)
@@ -32,27 +63,62 @@ def standardize(x, notFirst=True):
     x = x / std_x
   return x, mean_x, std_x
 
+def standardize_test_data(x, mean, std, notFirst=True):
+  """Normalize x, column-by-column
 
-def prepare_dimensions(y, tx):
-  """Reshape input data to two dimensions, if the dimensions are already correct, they stay the same
+  Parameters
+  ----------
+  tx : numpy array
+    (N,D)
+  mean : numpy array
+    mean to use for each column (1,D)
+  std : numpy array
+    standard_deviation to use for each column (1, D)
+  notFirst : bool, optional
+    whether to leave the first column (usually 1's). The default is True
+    
+  Returns
+  -------
+  x : numpy array
+    two dimensional numpy arrays with correct dimensions
+    (N,D)
+  """
+  if notFirst:
+    x[:,1:] = x[:,1:] - mean
+    x[:,1:] = x[:,1:] / std
+  else:
+    x = x - mean
+    x = x / std
+  return x
+
+def get_accuracy(y, tx, w, threshold):
+  """Calculates accuracy on given set.
 
   Parameters
   ----------
   y : numpy array
-    Targets vector (N,) or (N,1)
+    targets (N,1)
   tx : numpy array
-    Feature matrix (N,D)
-  
+    features (N,D)
+  w : numpy array
+    weights to use (1,D)
+  threshold : float
+    threshold to use between classes
+    
   Returns
   -------
-  y_reshaped, tx_reshaped : (numpy array (N,1), numpy array (N,D))
-      two dimensional numpy arrays with correct dimensions
-  """
-  y_reshaped = y.reshape(-1, 1)
-  tx_reshaped = tx.reshape(len(y_reshaped), -1)
-  return y_reshaped, tx_reshaped
-
-
+  accuracy : float
+    accuracy on the set
+  """    
+  pred = tx@w
+  pred_class = [0 if p<threshold else 1 for p in pred]
+  n = len(y)
+  correct=0
+  for i in range(n):
+      if pred_class[i] == y[i]:
+          correct+=1
+  return correct/n
+  
 def build_poly(x, degree, interactions=False):
   """Polynomial basis functions for input data x, for 0 up to degree degrees and 
   all 2nd degree interactions of first degree features.
@@ -63,16 +129,13 @@ def build_poly(x, degree, interactions=False):
     Feature matrix (N,D)
   degree : int
     max degree of polynomial expansion
+  interactions : bool, optional
+    whether to put interactions in the expanded polynomial. The default is False
     
   Returns
   -------
   accu_expanded : numpy array
       matrix (N, 1+D*degree+(D choose 2)) formed by applying the polynomial basis to the input data
-  
-  Example
-  -------
-  input = x,y,z degree=3
-  output = 1,x,y,z,x^2,y^2,z^2,x^3,y^3,z^3,xy,xz,yz 
   """
   n, d = x.shape
   accu_expanded = np.ones((n,1))
