@@ -237,8 +237,8 @@ def lambda_gamma_degree_sgd_cv(y, tx, algorithm, lambdas, gammas, degrees, K, ma
     Regularisation parameters for cost function
   gammas : iterable
     Learning rates for SGD
-  degrees : int
-    The polynomial degree
+  degrees : iterable
+    The polynomial degrees
   K : int
     Number of folds
   max_iters : int
