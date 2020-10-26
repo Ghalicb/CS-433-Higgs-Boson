@@ -15,11 +15,14 @@
 
 
 \begin{document}
-\title{Writing Scientific Papers and Software}
+\title{{\large Finding the Higgs Boson}}
 
 \author{
-  Cheng Soon Ong\\
-  \textit{Department of Computer Science, ETH Zurich, Switzerland}
+  APOSTOLOV Alexander (alexander.apostolov@epfl.ch)\\
+  BAUM Auguste (auguste.baum@epfl.ch)\\
+  CHRAIBI Ghali (ghali.chraibi@epfl.ch)\\
+  \\
+  \textit{CS-433 Machine Learning - October 2020, EPFL, Switzerland}
 }
 \maketitle
 
@@ -37,7 +40,49 @@
 
 \section{Introduction}
 
+The Higgs Boson in an elementary particle discovered in 2013 explaining why other particles have mass. This particle is not directly observable through experimentation, but one can still measure its «decay signature» (i.e. the products that result from its decay process). Although, it is hard to distinguish between the decay signature of a Higgs Boson and those of other particules.\\
+Therefore, our goal here is to use binary classification techniques to predict whether a given event’s signature is the result of a Higgs boson or not.
+
+
 \section{Models and Methods}
+
+\subsection{Algorithms}
+
+We first implemented many of the classic algorithms to solve a binary classification problem in order to compare how well they perform on our dataset. These are :
+\begin{itemize}
+    \item Least Square (LS) using Gradient Descent, Stochastic Gradient Descent (SGD) and its closed-form equation.
+    \item Ridge Regression - closed-form equation of Least squares with a regularization term.
+    \item Logistic Regression using Stochastic Gradient Descent.
+    \item Regularized Logistic Regression using Stochastic Gradient Descent.
+\end{itemize}
+
+\subsection{Data Processing}
+
+\subsubsection{Data label}
+The given labels take values in \{-1, 1\}. However, it is more convenient to have labels in \{0, 1\} for (regularized) logistic regression. We therefore map all the -1 to 0.
+
+\subsubsection{Dealing with invalid values}
+The raw dataset contains many invalid value encoded as -999.0. We observed that all these invalid values were concentrated on specific features (more precisely 11 features out of 30). We considered two ways of dealing with these values :
+\begin{itemize}
+    \item Drop the features containing invalid values (as they represent up to 70% of the feature).
+    \item Replace the invalid values by the mean of each feature.
+\end{itemize}
+
+\subsubsection{Feature expansion}
+
+
+\subsubsection{Normalization}
+
+
+\subsection{First Model}
+
+\subsection{Second Model}
+
+\subsection{Third Model}
+
+\subsection{Cross-validation}
+
+\\ \\ \\
 
 Cleaning the data was important as many columns were missing a significant amount of data (up to 70 \% for 7 of the 29 features).
 
