@@ -76,5 +76,5 @@ def separate_data(tx, y, ids):
     tX_3 = tX_3[tx[:,-2]==3]
     tX_3 = remove_columns(tX_3, [-2])
     y_3 = y[tx[:,-2]==3]
-    ids_3 = ids[tx[:,-2]==2]
+    ids_3 = ids[tx[:,-2]==3]
     return tX_0, tX_1, tX_2, tX_3, y_0, y_1, y_2, y_3, ids_0, ids_1, ids_2, ids_3
