@@ -3,7 +3,7 @@
 import csv
 import numpy as np
 
-def partition(y, tx, fraction = 0.8):
+def partition(y, tx, ids, fraction = 0.8, seed=1):
   """Partition data by a given fraction.
   
   Parameters
@@ -12,12 +12,16 @@ def partition(y, tx, fraction = 0.8):
     (N,1)
   tx : numpy array
     (N,D)
+  ids : numpy array
+    (N,1)
   fraction : float, optional
     Fraction to use in test set. The default is 0.8
+  seed : nt, optional
+    Seed for permutations
 
   Returns
   -------
-  y_train, tx_train, y_test, tx_test : numpy arrays
+  y_train, tx_train, ids_train, y_test, tx_test, ids_test : numpy arrays
     
   """
   np.random.seed(seed)
@@ -26,10 +30,12 @@ def partition(y, tx, fraction = 0.8):
 
   y_train = y[indices[:cutoff_idx]]
   tX_train = tX[indices[:cutoff_idx]]
+  ids_train = ids[indices[:cutoff_idx]]
   y_test = y[indices[cutoff_idx:]]
   tX_test = tX[indices[cutoff_idx:]]
+  ids_test = ids[indices[cutoff_idx:]]
 
-  return y_train, tx_train, y_test, tx_test
+  return y_train, tx_train, ids_train, y_test, tx_test, ids_test
 
 def standardize(x, notFirst=True):
   """Normalize x, column-by-column
