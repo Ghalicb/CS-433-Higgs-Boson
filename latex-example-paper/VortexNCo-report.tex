@@ -129,10 +129,70 @@ Left out least squares gradient descent because the number of iterations was too
 \end{table}
 
 
+\begin{table}
+  \centering
+  % \textrm
+  \begin{tabular}{ |c|c|c| } 
+    \hline
+    Ridge & Logistic & Reg. Logistic \\
+    \hline
+    0.792 & 0.711    & 0.709 \\
+    \hline
+  \end{tabular}
+  % \vspace{-3mm}
+  \caption{Best accuracy on test set partitioned according to the categorical variable. Note that Ridge regression achieves a much higher accuracy.}
+  \label{tbl:test-accuracies-partitioned}
+\end{table}
+
+
+
 
 \section{Results}
 
+After grid-searching for the best hyperparameters, it seemed to surface
+that ridge regression achieves the best results among all the algorithms.
+
+Note that we use a different model depending on the category the data
+point belongs in with respect to the \textsf{PRI\_jet\_num} variable.
+
+The parameters used for each category are shown in \autoref{tbl:parameters-ridge-partitioned}.
+% The value of $\lambda$ chosen corresponds to that found with grid-search,
+% the results of which are visualised in %\autoref{fig:rr-grid-search}.
+
+\begin{table}
+  \centering
+  % \textrm
+  \begin{tabular}{ |c|c|c|c|c| } 
+    \hline 
+    Category   & 0  & 1  & 2  & 3  \\
+    Max degree & 14 & 15 & 12 & 15 \\
+    \hline
+  \end{tabular}
+  % \vspace{-3mm}
+  \caption{Parameters used to train the ridge regression that produced 79.2\% accuracy (cf. \autoref{tbl:test-accuracies-partitioned}). The value of $\lambda$ used was $10^{-8}$.}
+  \label{tbl:parameters-ridge-partitioned}
+\end{table}
+
 \section{Discussion}
+There are a number of free variables that can influence the performance
+of the training. The learning algorithm, the learning rate and regularisation
+(when required), the maximum degree of the polynomial expansion...
+
+This complexity lead us to make choices based on intuition; namely,
+which bounds and precision to use for the grid searches.
+Indeed, it is very possible that, with a lower learning rate and
+different regularisations (provided that convergence is reached fast
+enough), we could have achieved better results.
+Unfortunately, compromises had to be made with respect to the 
+time-performance trade-off, which may have lead to us to
+miss very high-performing combinations of parameters.
+
+Similarly, feature expansion was performed to a lesser degree than
+what might have been required: we decided not to include interactions
+terms in order to limit the number of features and the effect of
+multicollinearity.
+
+Feature expansion that are not polynomial (exponential, logarithmic, sine...)
 
 \section{Conclusion}
 Funny how degrees tend to not have an impact for SGD learning algorithms.
