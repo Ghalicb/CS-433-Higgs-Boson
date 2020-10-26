@@ -3,11 +3,10 @@
   xlabel={Maximum Degree},
   ylabel={Mean Squared Error},
   grid=major,
-  legend entries={Training,Validation},
-  mark size=1pt,
-  mark=*,
+  height=5cm,
+  width=\columnwidth,
 ]
-  \addplot [red] table [x=epoch, y=tr_loss] {figures/ls_degrees.txt};
-  \addplot [blue] table [x=epoch, y=val_loss] {figures/ls_degrees.txt};
+  % \addplot [red] table [x=epoch, y=tr_loss] {figures/ls_degrees.txt};
+  \addplot [blue, mark=*] table {figures/ls_degrees.txt};
 \end{axis}
 \end{tikzpicture}
