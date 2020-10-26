@@ -160,7 +160,7 @@ def cross_validation_ridge(y, tx, K, seed, lambda_ = 0):
   return w_best, training_errors, validation_errors
 
 def lambda_degree_ridge_cv(y, tx, lambdas, degrees, K, seed):
-  """Do K-fold cross-validation for each value in lambdas and gammas and each degree of polynomial expansion, at every iteration.
+  """Do K-fold cross-validation with ridge regression for each value in lambdas and gammas and each degree of polynomial expansion, at every iteration.
   
   Inputs:
   ========
@@ -221,8 +221,9 @@ def lambda_degree_ridge_cv(y, tx, lambdas, degrees, K, seed):
 
   return training_errors, validation_errors
 
+
 def lambda_gamma_degree_sgd_cv(y, tx, algorithm, lambdas, gammas, degrees, K, max_iters, batch_size, seed):
-  """Do K-fold cross-validation for each value in lambdas and gammas and each degree of polynomial expansion, at every iteration.
+  """Do K-fold cross-validation with SGD for each value in lambdas and gammas and each degree of polynomial expansion, at every iteration.
   
   Inputs:
   ========
