@@ -6,12 +6,12 @@
   legend entries={Training,Validation},
   no markers,
   mark size=1pt,
-  height=5cm,
+  height=4.5cm,
   width=\columnwidth,
 ]
   \addplot [red] table [x=epoch, y=tr_loss] {figures/converg_reg_log_seed666.txt};
   \addplot [blue] table [x=epoch, y=val_loss] {figures/converg_reg_log_seed666.txt};
-  \node[above right] at (axis cs: 200,2) {$\gamma = 0.01$};
+  \node[above right] at (axis cs: 200,1.5) {$\gamma = 0.01$};
 
   \addplot [red, dotted] table [x=epoch, y=tr_loss] {figures/conv_reg_logist_seed666_lambda01_gamma01.txt};
   \addplot [blue, dotted] table [x=epoch, y=val_loss] {figures/conv_reg_logist_seed666_lambda01_gamma01.txt};
