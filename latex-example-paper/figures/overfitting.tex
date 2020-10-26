@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+\begin{axis}[
+  xlabel={Maximum Degree},
+  ylabel={Mean Squared Error},
+  grid=major,
+  height=5cm,
+  width=\columnwidth,
+]
+  % \addplot [red] table [x=epoch, y=tr_loss] {figures/ls_degrees.txt};
+  \addplot [blue, mark=*] table {figures/ls_degrees.txt};
+\end{axis}
+\end{tikzpicture}
