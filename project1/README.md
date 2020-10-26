@@ -4,8 +4,9 @@
 ## What is this?
 In this project, we build a classification model using the data
 provided by EPFL which can be found at [this link](https://www.aicrowd.com/challenges/epfl-machine-learning-higgs).
+The data can be found as csv files at [this link](https://github.com/epfml/ML_course/tree/master/projects/project1/data).
 
-To see the best results we obtained, run the `run.py` script.
+To see the best results we obtained, run the `run.py` script, with the csv files (`train.csv` and `test.csv`) in the `data` directory.
 
 ## What is in there?
 The `run.py` script will:
